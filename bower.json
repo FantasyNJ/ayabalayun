@@ -1,0 +1,20 @@
+{
+  "name": "yun",
+  "description": "ayabala云盘",
+  "main": "index.js",
+  "authors": [
+    "FantasyNJ <ningjie1993@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1"
+  }
+}

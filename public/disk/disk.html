@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>微云网页版</title>
+    <meta name="Keywords" content="QQ, 腾讯,微云, 分享, 网盘, 网络硬盘, U盘, 云存储, 传输, 存储, 同步, 备份, 拍照, 上传, 下载, 中转, 文件, 照片, 相册, 离线, 传文件, wifi, cloud, 微云网页版, weiyun, weiyun web">
+    <meta name="Description" content="微云是腾讯公司为用户精心打造的一项智能云服务, 您可以通过微云方便地在手机和电脑之间同步文件、推送照片和传输数据。">
+    <!--<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">-->
+    <link rel="stylesheet" href="../common/css/reset.css">
+    <link rel="stylesheet" href="../common/css/common.css">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+<div class="g-header">
+    <h1><img src="img/web-logo.png" alt="腾讯微云网页版"></h1>
+</div>
+<div class="g-side">
+    <div class="g-upload">
+        <div class="m-upload"><i class="f-inbl">+</i><span class="f-inbl">上传</span></div>
+    </div>
+    <ul class="g-list">
+        <li class="m-list list-current"><a href="javascript:;">目录</a></li>
+        <li class="m-list"><a href="javascript:;">最近</a></li>
+        <li class="m-list-gap"><span></span></li>
+        <li class="m-list"><a href="javascript:;">文档</a></li>
+        <li class="m-list"><a href="javascript:;">图片</a></li>
+    </ul>
+</div>
+<div class="g-main">
+    <div class="g-toolbar">
+        <div class="g-btn-left">
+            <!--<a class="u-btn" href="javascript:;"><span class="ico ico-down"></span>下载</a>-->
+            <!--<a class="u-btn" href="javascript:;"><span class="ico ico-share"></span>分享</a>-->
+            <!--<a class="u-btn" href="javascript:;"><span class="ico ico-move"></span>移动到</a>-->
+            <a class="u-btn rename" href="javascript:;"><span class="ico ico-rename"></span>重命名</a>
+            <a class="u-btn dele" href="javascript:;"><span class="ico ico-del"></span>删除</a>
+            <a class="u-btn mkdir" href="javascript:;"><span class="ico ico-mkdir"></span>新建文件夹</a>
+        </div>
+        <div class="g-btn-right">
+            <a class="u-btn u-btn-list" href="javascript:;"><span class="ico ico-list"></span>文件列表</a>
+        </div>
+    </div>
+    <div class="g-filebox">
+        <div class="g-file-tree">
+            <div class="tree-menu">
+                <!--<ul>-->
+                    <!--<li>-->
+                        <!--<div class="tree-title tree-nav tree-contro">-->
+                                        <!--<span>-->
+                                            <!--<strong class="ellipsis">微云</strong>-->
+                                            <!--<i class="ico"></i>-->
+                                        <!--</span>-->
+                        <!--</div>-->
+                        <!--<ul>-->
+                            <!--<li>-->
+                                <!--<div class="tree-title tree-contro" style="padding-left: 24px;">-->
+                                                <!--<span>-->
+                                                    <!--<strong class="ellipsis">我的文档</strong>-->
+                                                    <!--<i class="ico"></i>-->
+                                                <!--</span>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
+                <!--</ul>-->
+            </div>
+        </div>
+        <div class="g-file-show">
+            <div class="g-filepath">
+                <span class="checkbox" id="all"></span>
+                <div class="g-path">
+                    <a href="javascript:;">微云</a>
+                </div>
+            </div>
+            <div class="g-filewrap">
+                <div class="g-filecon clearfix">
+                    <!--<div class="m-file">-->
+                        <!--<span class="checkbox"></span>-->
+                        <!--<div class="img"><span class="img-folder f-inbl"></span></div>-->
+                        <!--<div class="name">-->
+                            <!--<span style="display: block;">哈哈</span>-->
+                            <!--<input style="display: none;" type="text">-->
+                        <!--</div>-->
+                        <!--<div class="tool">-->
+                            <!--<a href="javascript:;"></a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="contextmenu">
+    <a href="javascript:;">下载</a>
+    <a href="javascript:;">删除</a>
+    <a href="javascript:;">移动到</a>
+    <a href="javascript:;">重命名</a>
+</div>
+<div class="g-bk"></div>
+<div class="g-confirm">
+    <h3 class="g-confirm-header"><div class="title">删除文件</div></h3>
+    <div class="g-confirm-content">
+        <div class="mod-alert">
+            <div class="alert-inner">
+                <i class="ico"></i>
+                <h4 class="title">确定要删除文件夹吗？</h4>
+                <p class="info">已删除的文件可以在回收站找到</p>
+            </div>
+        </div>
+    </div>
+    <div class="g-confirm-btn">
+        <a class="btn ok f-inbl" href="javascript:void(0)">确定</a>
+        <a class="btn cancel f-inbl" href="javascript:void(0)">取消</a>
+    </div>
+    <div class="g-confirm-close">×</div>
+</div>
+<div class="drag-move">
+    <div class="icons">
+        <!--<span class="icon"></span>-->
+    </div>
+    <span class="sum"></span>
+</div>
+<div class="full-tip-box">
+        <span class="full-tip">
+            <span class="inner">
+                <i class="ico"></i>
+                <span class="text" data-id="label"></span>
+        </span>
+        </span>
+</div>
+<script src="./js/nj.js"></script>
+<script src="./js/datas.js"></script>
+<script src="./js/tree.js"></script>
+<script src="./js/func.js"></script>
+<script src="./js/index.js"></script>
+</body>
+</html>
