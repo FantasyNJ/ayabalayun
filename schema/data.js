@@ -3,7 +3,7 @@ var user = require('../models/User');
 var data = require('../models/Data');
 
 var data = new mongoose.Schema({
-    user: {
+    user_id: {
         type: mongoose.Schema.ObjectId,
         ref: 'user',
         default: null
@@ -28,3 +28,5 @@ var data = new mongoose.Schema({
         default: false
     },
 })
+
+module.exports = data;

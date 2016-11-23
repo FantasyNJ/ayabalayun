@@ -3,7 +3,12 @@ var express = require('express');
 var router = express.Router();
 //user数据库
 var User = require('../models/User');
+var Data = require('../models/Data');
+var Tree = require('../tools/Tree')
 
+/*
+* user部分
+*/
 router.use(function(req, res, next){
     res.responseData = {
         code: 0,    //状态码0表示成功
@@ -98,7 +103,7 @@ router.post('/user/register', function(req, res, next){
             res.responseData.message = '用户注册成功';
             res.sendJSON();
 
-            console.log(usersave)
+
         }
     }).catch(function(){
         res.responseData.code = 5;
@@ -134,13 +139,219 @@ router.post('/user/login', function(req, res, next){
             return;
         }
 
+        //把登录用户的信息记录到cookie中，发送给客户端
+        var cookieUserInfo = {
+            _id: userInfo._id.toString(),
+            username: userInfo.username
+        };
+
+        req.cookies.set('userInfo', JSON.stringify(cookieUserInfo));
+
         res.responseData.code = 0;
         res.responseData.message = '登陆成功';
-        res.responseData._id = userInfo._id;  //用户的数据库id
-        res.responseData.username = userInfo.username;  //用户的用户名
         res.sendJSON();
     })
 })
 
+
+
+
+/*
+* data部分
+* _id
+* name
+* (pid)
+*/
+
+router.post('/data/createFile', checkAuth,function(req, res){
+    var name = req.body.name || '';
+    var pid = req.body.pid;
+    if(pid === 'null' || pid === undefined){
+        pid = null;
+    }
+
+    if(name === ''){
+        res.responseData.code = 1;
+        res.responseData.message = '文件名不能为空';
+        res.sendJSON();
+    }
+
+    if(pid !== null){
+        var parentInfo = req.filesTree.get(pid);
+        if ( !parentInfo ) {
+            res.responseData.code = 2;
+            res.responseData.message = '所在父级不存在';
+            res.sendJSON();
+            return;
+        }
+        if ( parentInfo.type !== 'folder' ) {
+            res.responseData.code = 3;
+            res.responseData.message = '目标父级不是一个文件夹';
+            res.sendJSON();
+            return;
+        }
+    }
+
+    if(req.filesTree.isNameRepeat(pid, name)){
+        res.responseData.code = 2;
+        res.responseData.message = '目录下已存在同名文件夹';
+        res.sendJSON();
+        return;
+    }
+
+
+    //保存文件夹
+    var data = new Data({
+        pid: pid,
+        name: name,
+        user_id: req.userInfo._id,
+        createDate: Date.now()
+    });
+    data.save().then(function(dataInfo) {
+        if(dataInfo){
+            res.responseData.code = 0;
+            res.responseData.message = '文件夹创建成功';
+            res.sendJSON();
+        }
+    });
+})
+
+//获取文件夹下文件夹和文件
+router.get('/data/getChildren', checkAuth, function(req, res) {
+    var pid = req.query.pid;
+    if(pid === 'null' || pid === undefined){
+        pid = null;
+    }
+    res.responseData.data = req.filesTree.getChildren(pid);
+    res.sendJSON();
+});
+
+router.get('/data/getNav', checkAuth, function(req, res){
+    var pid = req.query.pid;
+    if(pid === 'null' || pid === undefined){   //渲染的是云盘根目录，直接返回空数组
+        pid = null;
+        res.responseData.data = [];
+        res.sendJSON();
+        return;
+    }
+    var item = req.filesTree.get(pid);
+    res.responseData.data = req.filesTree.getParents(pid).concat(item);
+    res.sendJSON();
+})
+
+router.get('/data/getTree', checkAuth, function(req, res){
+    var pid = req.query.pid;
+    if(pid === 'null' || pid === undefined){
+        pid = null;
+    }
+    res.responseData.data = req.filesTree.getFolderSons(null);
+    res.sendJSON();
+})
+/*
+* 文件夹移动到接口
+* upId     string
+* selectId array
+ */
+router.post('/data/move', checkAuth, function(req, res){
+    var upId = req.body.upId;
+    var selectId = JSON.parse(req.body.selectId);
+    for(var i = 0;i < selectId.length;i++){
+        var data = req.filesTree.get(selectId[i]);
+        var name = data.name;
+        if(req.filesTree.isNameRepeat(upId, name)){
+            res.responseData.message = '有重名文件，不能移入！';
+            res.responseData.code = 1;
+            res.sendJSON();
+            return;
+        }
+    }
+
+    for(var i = 0;i < selectId.length;i++){
+        if(req.filesTree.isChild(selectId[i], upId)){
+            res.responseData.code = 1;
+            res.responseData.message = '目标是子级，不能移动';
+            res.sendJSON();
+            return;
+        }
+    }
+
+    selectId.forEach(function(item){
+        Data.update({
+            _id: item
+        },{
+            pid: upId
+        }).then(function(dataInfo){
+            res.responseData.message = '移入文件夹成功';
+            res.sendJSON();
+        })
+    })
+    
+})
+/*
+* 文件夹重命名
+* _id  改名的文件夹id   string
+* name 要更改的文件夹名  string
+* pid  父级文件夹的id string
+ */
+router.post('/data/rename', checkAuth, function(req, res){
+    var _id = req.body._id;
+    var name = req.body.name;
+    var pid = req.body.pid;
+    if(pid === 'null' || pid === undefined){
+        pid = null;
+    }
+
+    if(req.filesTree.isNameRepeatNotSelf(pid, _id, name)){
+        res.responseData.message = '有重名文件，不能重命名！';
+        res.responseData.code = 1;
+        res.sendJSON();
+        return;
+    }
+    Data.update({
+        _id: _id
+    },{
+        name: name
+    }).then(function(dataInfo){
+        res.responseData.message = '文件夹改名成功';
+        res.sendJSON();
+    })
+})
+
+/*
+* 文件夹重命名
+* removeIds 要删除的文件夹_id  array
+ */
+router.post('/data/remove', checkAuth, function(req, res){
+    var removeIds = JSON.parse(req.body.removeIds);
+    for(var i = 0; i < removeIds.length;i++){
+        var arr = req.filesTree.getSonsId(removeIds[i]);
+        removeIds = removeIds.concat(arr)
+    }
+    Data.remove({
+        _id: {$in: removeIds}
+    }).then(function(){
+        res.responseData.message = '文件夹删除成功';
+        res.sendJSON();
+    })
+})
+
+//检测用户权限以及获取用户数据
+function checkAuth(req, res, next) {
+    if (!req.userInfo._id) {
+        res.responseData.code = -1;
+        res.responseData.message = '你没有访问该接口的权限';
+        res.sendJSON();
+    } else {
+        //数据初始化
+        Data.find({
+            user_id: req.userInfo._id
+        }).sort(
+            {createDate: -1}
+        ).then(function(result) {
+            req.filesTree = new Tree(result);
+            next();
+        });
+    }
+}
 
 module.exports = router;

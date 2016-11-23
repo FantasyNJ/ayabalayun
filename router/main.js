@@ -3,11 +3,23 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function(req, res){
-    res.render('index');
+
+    if (req.userInfo._id) {
+        //已经登录了
+        res.redirect('/disk');
+    } else {
+        res.render('index');
+    }
 })
 
 router.get('/disk', function(req, res){
-    res.render('disk');
+
+    if (!req.userInfo._id) {  //用户没有登录
+        res.redirect('/');
+    } else {
+        res.render('disk');
+    }
+
 })
 
 module.exports = router;

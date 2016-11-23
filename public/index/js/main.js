@@ -113,9 +113,9 @@ $(function(){
             type: 'POST',
             url: '/api/user/register',
             data: {
-                username: userName.val(),
-                password: passWord.val(),
-                repassword: rePassWord.val()
+                username: userName.val().trim(),
+                password: passWord.val().trim(),
+                repassword: rePassWord.val().trim()
             },
             dataType: 'json',
             success: function(result){
@@ -145,8 +145,8 @@ $(function(){
             type: 'POST',
             url: '/api/user/login',
             data: {
-                username: userName.val(),
-                password: passWord.val(),
+                username: userName.val().trim(),
+                password: passWord.val().trim(),
             },
             dataType: 'json',
             success: function(result){
@@ -155,10 +155,6 @@ $(function(){
                     prompt.css('color', 'red');
                 } else {
                     prompt.css('color', 'green');
-                    window.localStorage.setItem('user', {
-                        _id: result._id,
-                        username: result.username
-                    });
                     setTimeout(function() {
                         window.location.href = '/disk';
                     }, 1000);

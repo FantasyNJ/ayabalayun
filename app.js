@@ -11,6 +11,8 @@ var mongoose = require('mongoose');
 var swig = require('swig');
 // post数据处理模块
 var bodyParser = require('body-parser');
+// cookie模块
+var Cookies = require('cookies');
 // 创建一个app
 var app = express();
 
@@ -32,6 +34,23 @@ swig.setDefaults({cache: false});
 //解析处理post提交过来的数据:urlencoded。返回的对象是一个键值对，当extended为false的时候，键值对中的值就为'String'或'Array'形式，为true的时候，则可为任何数据类型。
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
+//处理cookie
+app.use(function(req, res, next) {
+    req.cookies = new Cookies(req, res);
+
+    //在req对象下增加一个自定义属性，用来保存当前登录的用户的信息
+    req.userInfo = {};
+
+    if (req.cookies.get('userInfo')) {
+        try {
+            var cookieUserInfo = JSON.parse(req.cookies.get('userInfo'));
+            req.userInfo = cookieUserInfo;
+        } catch(e){}
+    }
+
+    next();
+})
 //api模块路由
 app.use('/api', require('./router/api.js'));
 //主模块路由
