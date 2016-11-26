@@ -18,32 +18,39 @@ var isRename = false; //没有正在重命名的文件夹
 var ele = []; //当前选中的元素
 var dragEle = null; //拖拽时移入到哪个元素
 var isMove = false; //是否在元素上移动，否的话是false
+
 //拖拽时显示的元素
 var dragmove = $S('.drag-move')[0];
 var dragmoveIcon = $S('.icons', dragmove)[0];
 var sum = $S('.sum', dragmove)[0];
 
-
-//右键菜单
-var context = $S('.contextmenu')[0];
-var contextBtn = $S('a', context);
 //左侧文件列表
 var gFileTree = $S('.g-file-tree')[0];
 var treeMenu = $S('.tree-menu', gFileTree)[0];
 var treeWrap = $S('.tree-wrap', treeMenu)[0];
 var listOn = {};   //保存左侧列表文件夹的打开状态
 
+//右键菜单
+var contextmenu = $S('contextmenu')[0];
+var ctxRemove = $S('.ctx-remove', contextmenu)[0];
+var ctxMove = $S('.ctx-move', contextmenu)[0];
+var ctxRename = $S('.ctx-rename', contextmenu)[0];
+var context = $S('.contextmenu')[0];
+var contextBtn = $S('a', context);
+//弹窗背景
+var bk = $S('.g-bk')[0];
+
 
 //展开、收起文件列表
 (function () {
     var toolBtnList = $S('.u-btn-list', toolBar)[0]; //功能按钮
     var fileShow = $S('.g-file-show')[0];
-    toolBtnList.isShow = false; //是否展开？展开true
+    toolBtnList.isShow = true; //是否展开？展开true
 
     addEvent(toolBtnList, 'click', show);
 
     function show() {
-        if (!toolBtnList.isShow) {
+        if (toolBtnList.isShow) {
             fileShow.style.left = 0;
         } else {
             fileShow.style.left = '165px';
@@ -65,7 +72,7 @@ var listOn = {};   //保存左侧列表文件夹的打开状态
             createFile(); //创建文件夹的时候已经设置正在创建文件夹开关
             allNotSelect();
         } else {
-             tipsFn('err', '有文件正在重命名');
+            tipsFn('err', '有文件正在重命名');
         }
     });
      //鼠标按下时，删除正在创建的文件夹或者生成文件夹
@@ -128,13 +135,14 @@ addEvent(all, 'click', function () {
 
 //文件夹添加点击事件,事件委托
 addEvent(filecon, 'mouseup', function (ev) {
-    var target = ev.target;
-    if (getSelector(ev.target, '.m-file') && !isMove && ev.button === 0) {
+    var target = getSelector(ev.target, '.m-file');
+    if (target && !isMove && ev.button === 0) {
         //如果不是移动时在文件夹上抬起并且是鼠标左键
-        //console.log('up')
-        target = getSelector(ev.target, '.m-file');
+        if(target.dataset.fileType !== 'folder'){  //不是文件夹，不执行
+            return;
+        }
         currentPid = target.dataset.fileId;
-        render(currentPid);
+        render();
         listOn[currentPid] = true;
         document.onmousemove = document.onmouseup = null;
     }
@@ -398,7 +406,7 @@ function createFile(){
         </div>
     `;
     filecon.insertBefore(file, aFile[0]);
-    var inp = $('input', file)[0];
+    var inp = $S('input', file)[0];
     inp.focus();
     addEvent(file, 'mousedown', function(ev){
         ev.cancelBubble = true;
@@ -411,7 +419,7 @@ function fileHtml(data){
             <span class="checkbox"></span>
             <div class="img"><span class="img-${data.type} f-inbl"></span></div>
             <div class="name">
-                <span style="display: block;">${data.name}</span>
+                <span class="ellipsis" style="display: block;">${data.name}</span>
                 <input style="display: none;" type="text">
             </div>
         </div>
@@ -423,8 +431,8 @@ function fileHtml(data){
  *  上方提示信息框
  *  封装小提醒 err ok warn
  * */
-var fullTipBox = $(".full-tip-box")[0];
-var tipText = $(".text", fullTipBox)[0];
+var fullTipBox = $S(".full-tip-box")[0];
+var tipText = $S(".text", fullTipBox)[0];
 
 function tipsFn(cls, title) {
     tipText.innerHTML = title;
@@ -483,7 +491,7 @@ function toggleClass(ele, classNames) {
 }
 //找到被选中的元素
 function whoSelect() {
-    var checkbox = $('.checkbox', filecon);
+    var checkbox = $S('.checkbox', filecon);
     var arr = [];
     for (var i = 0; i < checkbox.length; i++) {
         var item = checkbox[i];
@@ -599,10 +607,11 @@ addEvent(filecon, 'mousedown', function (ev) {
         };
         document.onmouseup = function (ev) {
             console.log(disX, ev.pageX, disY, ev.pageY);
+            //防止无法进入文件夹
             if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
                 console.log(disX - ev.pageX, disY - ev.pageY);
-                // currentId = parseInt(target.dataset.fileId);
-                // render();
+                currentPid = target.dataset.fileId;
+                render();
                 document.onmousemove = document.onmouseup = null;
                 return;
             }
@@ -615,8 +624,10 @@ addEvent(filecon, 'mousedown', function (ev) {
                 }
             }
             var seleEle = whoSelect();
-            if (upEle && seleEle.indexOf(upEle) === -1) {
+            if (upEle && seleEle.indexOf(upEle) === -1 && seleEle.length !== 0) {
+                console.log(seleEle)
                 //如果有移入的元素并且移入的元素不是选中的元素
+                //并且选中的元素不为空
                 var upId = upEle.dataset.fileId;
                 var selectId = [];
                 for (var i = 0; i < seleEle.length; i++) {
@@ -675,82 +686,92 @@ function up(ev, sObj) {
 /*
  * 重命名
  * */
-var rename = $S('.rename', toolBarLeft)[0];
-addEvent(rename, 'mouseup', renameEvent);
-function renameEvent(ev) {
-    isRename = true; //有文件夹正在改名
-    var aEle = whoSelect();
-    if (aEle.length !== 1) {
-        if (aEle.length === 0) {
-            tipsFn('err', '请选择文件');
+(function(){
+    var rename = $S('.rename', toolBarLeft)[0];
+    addEvent(rename, 'mouseup', renameEvent);
+
+//右键菜单重命名按钮
+    addEvent(ctxRename, 'click', function (ev) {
+        renameEvent(ev);
+        context.style.display = 'none';
+    });
+
+    function renameEvent(ev) {
+        isRename = true; //有文件夹正在改名
+        var aEle = whoSelect();
+        if (aEle.length !== 1) {
+            if (aEle.length === 0) {
+                tipsFn('err', '请选择文件');
+            } else {
+                tipsFn('err', '只能对单个文件夹重命名');
+            }
+            isRename = false; //没有文件夹正在改名
         } else {
-            tipsFn('err', '只能对单个文件夹重命名');
+            var item = aEle[0];
+            var box = $S('.name', item)[0];
+            var span = $S('span', box)[0];
+            var inp = $S('input', box)[0];
+            span.style.display = 'none';
+            inp.style.display = 'block';
+            inp.value = span.innerHTML;
+            inp.focus();
         }
-        isRename = false; //没有文件夹正在改名
-    } else {
-        var item = aEle[0];
-        var box = $S('.name', item)[0];
+        ev.cancelBubble = true;
+    }
+//鼠标按下时，正在重命名的情况
+    addEvent(document, 'mousedown', function () {
+        if (isRename) {
+            //如果正在重命名
+            renameFileEvent();
+        }
+    });
+//按下回车键
+    addEvent(document, 'keydown', function (ev) {
+        if (isRename && ev.keyCode === 13) {
+            renameFileEvent();
+        }
+    });
+//重命名公用函数
+    function renameFileEvent() {
+        var ele = whoSelect()[0];
+        var _id = ele.dataset.fileId; //注意转成数字
+        var box = $S('.name', ele)[0];
         var span = $S('span', box)[0];
         var inp = $S('input', box)[0];
-        span.style.display = 'none';
-        inp.style.display = 'block';
-        inp.value = span.innerHTML;
-        inp.focus();
-    }
-    ev.cancelBubble = true;
-}
-//鼠标按下时，正在重命名的情况
-addEvent(document, 'mousedown', function () {
-    if (isRename) {
-        //如果正在重命名
-        renameFileEvent();
-    }
-});
-//按下回车键
-addEvent(document, 'keydown', function (ev) {
-    if (isRename && ev.keyCode === 13) {
-        renameFileEvent();
-    }
-});
-//重命名公用函数
-function renameFileEvent() {
-    var ele = whoSelect()[0];
-    var _id = ele.dataset.fileId; //注意转成数字
-    var box = $S('.name', ele)[0];
-    var span = $S('span', box)[0];
-    var inp = $S('input', box)[0];
-    var v = inp.value.trim();
-    if (v.length === 0 || v === span.innerHTML) {
-        inp.style.display = 'none';
-        span.style.display = 'inline';
-        render();
-    }else {
-        ajax({
-            method: 'post',
-            url: '/api/data/rename',
-            data: {
-                name: v,
-                _id: _id,
-                pid: currentPid
-            },
-            success: function(result){
-                if( !result.code ){
-                    tipsFn('ok', result.message);
-                }else{
-                    tipsFn('err', result.message);
+        var v = inp.value.trim();
+        if (v.length === 0 || v === span.innerHTML) {
+            inp.style.display = 'none';
+            span.style.display = 'inline';
+            render();
+        }else {
+            ajax({
+                method: 'post',
+                url: '/api/data/rename',
+                data: {
+                    name: v,
+                    _id: _id,
+                    pid: currentPid
+                },
+                success: function(result){
+                    if( !result.code ){
+                        tipsFn('ok', result.message);
+                    }else{
+                        tipsFn('err', result.message);
+                    }
+                    render();
                 }
-                render();
-            }
-        })
+            })
+        }
+        isRename = false;
     }
-    isRename = false;
-}
+})();
 
 
+/*
+ * 文件夹删除
+ * */
 (function(){
-    /*
-     * 文件夹删除
-     * */
+
     var dele = $S('.dele', toolBarLeft)[0];
     addEvent(dele, 'mouseup', function () {
         var aEle = whoSelect();
@@ -760,206 +781,266 @@ function renameFileEvent() {
             showConfirm();
         }
     });
-    //显示删除提示框和遮罩层
-
-    //弹出提示框元素
-    var bk = $S('.g-bk')[0];
-    var confirm = $S('.g-confirm')[0];
-    var okBtn = $S('.ok', confirm)[0];
-    var cancelBtn = $S('.cancel', confirm)[0];
-    var closeBtn = $S('.g-confirm-close', confirm)[0];
-
-    function showConfirm() {
-        bk.style.display = 'block';
-        confirm.style.display = 'block';
-        confirm.style.left = (window.innerWidth - confirm.offsetWidth) / 2 + 'px';
-        confirm.style.top = (window.innerHeight - confirm.offsetHeight) / 2 + 'px';
-        window.onresize = function(){
-            confirm.style.left = (window.innerWidth - confirm.offsetWidth) / 2 + 'px';
-            confirm.style.top = (window.innerHeight - confirm.offsetHeight) / 2 + 'px';
-        }
-    }
-    //确定 按钮删除选中的文件夹
-    addEvent(okBtn, 'click', removeDoc);
-    addEvent(cancelBtn, 'click', hideConfirm);
-    addEvent(closeBtn, 'click', hideConfirm);
-    //确定按钮删除文件
-    function removeDoc(ev) {
-        var aEle = whoSelect();
-        var removeIds = [];
-        for (var i = 0; i < aEle.length; i++) {
-            var id = aEle[i].dataset.fileId;
-            removeIds.push(id);
-        }
-        ajax({
-            method: 'post',
-            url: '/api/data/remove',
-            data: {
-                removeIds: JSON.stringify(removeIds)
-            },
-            success: function(result){
-                success(result);
-            }
-        })
-        render();
-        hideConfirm(ev);
-        changeAllBtnStatus();
-        window.onresize = null;
-        ev.cancelBubble = true;
-    }
-    //隐藏删除提示框和遮罩层
-    function hideConfirm(ev) {
-        confirm.style.display = 'none';
-        bk.style.display = 'none';
-        window.onresize = null;
-        ev.cancelBubble = true;
-    } 
-})();
-
-
-//移动文件夹提示框
-(function(){
-    var gMoveConfirm = $S('.g-move-confirm')[0];
-    var treeTitle = $S('.tree-title', gMoveConfirm)[0];
-    var treeWrap = $S('.tree-wrap', gMoveConfirm)[0];
-    var treeMenu = $S('.tree-menu', gMoveConfirm)[0];
-    var moveId = '';
-    /*
-     * 文件夹移动
-     * */
-    var move = $S('.move', toolBarLeft)[0];
-    addEvent(move, 'mouseup', function () {
+    //右键菜单删除按钮
+    addEvent(ctxRemove, 'click', function (ev) {
         var aEle = whoSelect();
         if (aEle.length === 0) {
             tipsFn('err', '请选择文件');
         } else {
             showConfirm();
-            //渲染弹窗文件列表
-            renderConfirmTree();
         }
     });
-    //显示移动文件夹提示框和遮罩层
-
-    //弹出提示框元素
-    var bk = $S('.g-bk')[0];
-    var confirm = $S('.g-move-confirm')[0];
-    var okBtn = $S('.ok', confirm)[0];
-    var cancelBtn = $S('.cancel', confirm)[0];
-    var closeBtn = $S('.g-move-confirm-close', confirm)[0];
-
+    //显示删除提示框和遮罩层
     function showConfirm() {
+        var confirm = document.createElement('div');
+        confirm.className = 'g-confirm';
+        confirm.innerHTML = `
+            <h3 class="g-confirm-header"><div class="title">删除文件</div></h3>
+            <div class="g-confirm-content">
+                <div class="mod-alert">
+                    <div class="alert-inner">
+                        <i class="ico-alert"></i>
+                        <h4 class="title">确定要删除文件夹吗？</h4>
+                        <p class="info">已删除的文件可以在回收站找到</p>
+                    </div>
+                </div>
+            </div>
+            <div class="g-confirm-btn">
+                <a class="btn ok f-inbl" href="javascript:void(0)">确定</a>
+                <a class="btn cancel f-inbl" href="javascript:void(0)">取消</a>
+            </div>
+            <div class="g-confirm-close">×</div>
+        `;
+        //弹出提示框元素
+        var okBtn = $S('.ok', confirm)[0];
+        var cancelBtn = $S('.cancel', confirm)[0];
+        var closeBtn = $S('.g-confirm-close', confirm)[0];
+
+        document.body.appendChild(confirm);
         bk.style.display = 'block';
-        confirm.style.display = 'block';
-        confirm.style.left = (window.innerWidth - confirm.offsetWidth) / 2 + 'px';
-        confirm.style.top = (window.innerHeight - confirm.offsetHeight) / 2 + 'px';
-        window.onresize = function(){
-            confirm.style.left = (window.innerWidth - confirm.offsetWidth) / 2 + 'px';
-            confirm.style.top = (window.innerHeight - confirm.offsetHeight) / 2 + 'px';
-        }
-    }
-    //确定 按钮删除选中的文件夹
-    addEvent(okBtn, 'click', moveDoc);
-    addEvent(cancelBtn, 'click', hideConfirm);
-    addEvent(closeBtn, 'click', hideConfirm);
-    //确定按钮删除文件
-    function moveDoc(ev) {
-        var seleEle = whoSelect();
-        var selectIds = [];
-        //如果没有选中要移入的文件夹
-        if(moveId === ''){
-            hideConfirm(ev);
-        }else{
-            // seleEle.forEach(function(item){
-                // var id = item.dataset.fileId;
-                // if(id === moveId){
-                //     hideConfirm(ev);
-                //     tipsFn('err', '文件不能移入到本身')
-                //     return;
-                // }
-                // selectIds.push(id);
-            // })
-            for(var i = 0;i < seleEle.length;i++){
-                var item = seleEle[i];
-                var id = item.dataset.fileId;
-                if(id === moveId){
-                    hideConfirm(ev);
-                    tipsFn('err', '文件不能移入到本身')
-                    return;
-                }
-                selectIds.push(id);
+
+        elemMiddle(confirm);
+
+        addEvent(okBtn, 'click', removeDoc);
+        addEvent(cancelBtn, 'click', hideConfirm);
+        addEvent(closeBtn, 'click', hideConfirm);
+
+        //确定按钮删除文件
+        function removeDoc(ev) {
+            var aEle = whoSelect();
+            var removeIds = [];
+            for (var i = 0; i < aEle.length; i++) {
+                var id = aEle[i].dataset.fileId;
+                removeIds.push(id);
             }
-            console.log(selectIds)
             ajax({
                 method: 'post',
-                url: '/api/data/move',
+                url: '/api/data/remove',
                 data: {
-                    upId: moveId,
-                    selectId: JSON.stringify(selectIds)
+                    removeIds: JSON.stringify(removeIds)
                 },
                 success: function(result){
                     success(result);
                 }
             })
+            render();
+            hideConfirm(ev);
+            changeAllBtnStatus();
+            window.onresize = null;
+            ev.cancelBubble = true;
+        }
+        //隐藏删除提示框和遮罩层
+        function hideConfirm(ev) {
+            document.body.removeChild(confirm);
+            bk.style.display = 'none';
+            window.onresize = null;
+            ev.cancelBubble = true;
         }
     }
-    //隐藏删除提示框和遮罩层
-    function hideConfirm(ev) {
-        confirm.style.display = 'none';
-        bk.style.display = 'none';
-        window.onresize = null;
-        ev.cancelBubble = true;
-    } 
-    //渲染列表树
-    
-    function renderConfirmTree(){
-        var pid = pid || currentPid;
-        ajax({
-            method: 'get',
-            url: '/api/data/getTree',
-            data: {
-                pid: pid
-            },
-            success: function(result){
-                var data = result.data;
-                if(data.length === 0){
-                    $S('.ico', treeTitle)[0].style.display = 'none';
-                    removeClass(treeTitle, 'tree-contro-list');
-                    treeWrap.innerHTML = treeFileHtml(data);  //渲染列表
-                }else{
-                    $S('.ico', treeTitle)[0].style.display = 'inline';
-                    if(treeTitle.on || treeTitle.on === undefined){
-                        addClass(treeTitle, 'tree-contro-list');
-                    }else{
-                        addClass(treeTitle, 'tree-contro');
+})();
+
+
+//移动文件夹提示框
+(function(){
+
+    /*
+     * 文件夹移动
+     * */
+    var move = $S('.move', toolBarLeft)[0];
+    addEvent(move, 'mouseup', moveConfirmEvent);
+    /*
+    * 右键移动文件夹
+    * */
+    addEvent(ctxMove, 'click', moveConfirmEvent);
+
+
+    //移动文件夹弹窗事件
+    function moveConfirmEvent(){
+        var aEle = whoSelect();
+        if (aEle.length === 0) {
+            tipsFn('err', '请选择文件');
+        } else {
+            showConfirm();  //显示弹窗并渲染列表
+        }
+    }
+
+    function showConfirm() {
+        var confirm = document.createElement('div');
+        confirm.className = 'g-move-confirm g-confirm';
+        confirm.innerHTML = `
+            <h3 class="g-move-confirm-header g-confirm-header"><div class="title">移动文件</div></h3>
+            <div class="g-move-confirm-content g-confirm-content">
+                <div class="mod-alert">
+                    <div class="alert-inner">
+                        <div class="tree-menu">
+                            <ul>
+                                <li>
+                                    <div class="tree-title" data-file-id="null" style="padding-left:14px;">
+                                        <span>
+                                            <strong class="ellipsis">云盘</strong>
+                                            <i class="ico"></i>
+                                        </span>
+                                    </div>
+                                    <div class="tree-wrap">
+                                        <!-- <ul>
+                                            <li>
+                                                <div class="tree-title tree-contro" style="padding-left: 24px;">
+                                                    <span>
+                                                        <strong class="ellipsis">我的文档</strong>
+                                                        <i class="ico"></i>
+                                                    </span>
+                                                </div>
+                                                <ul></ul>
+                                            </li>
+                                        </ul> -->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="g-move-confirm-btn g-confirm-btn">
+                <a class="btn ok f-inbl" href="javascript:void(0)">确定</a>
+                <a class="btn cancel f-inbl" href="javascript:void(0)">取消</a>
+            </div>
+            <div class="g-move-confirm-close g-confirm-close">×</div>
+        `;
+
+        document.body.appendChild(confirm);
+        //渲染列表树
+        renderConfirmTree();
+        /*
+         * 显示移动文件夹提示框和遮罩层
+         * 弹出提示框元素
+         * */
+        var okBtn = $S('.ok', confirm)[0];
+        var cancelBtn = $S('.cancel', confirm)[0];
+        var closeBtn = $S('.g-move-confirm-close', confirm)[0];
+        var gMoveConfirm = confirm;
+        var treeTitle = $S('.tree-title', gMoveConfirm)[0];
+        var treeWrap = $S('.tree-wrap', gMoveConfirm)[0];
+        var treeMenu = $S('.tree-menu', gMoveConfirm)[0];
+        var moveId = '';
+
+        bk.style.display = 'block';
+
+        elemMiddle(confirm);
+
+        //确定 按钮删除选中的文件夹
+        addEvent(okBtn, 'click', moveDoc);
+        addEvent(cancelBtn, 'click', hideConfirm);
+        addEvent(closeBtn, 'click', hideConfirm);
+        //确定按钮删除文件
+        function moveDoc(ev) {
+            var seleEle = whoSelect();
+            var selectIds = [];
+            //如果没有选中要移入的文件夹
+            if(moveId === ''){
+                hideConfirm(ev);
+            }else{
+                for(var i = 0;i < seleEle.length;i++){
+                    var item = seleEle[i];
+                    var id = item.dataset.fileId;
+                    if(id === moveId){
+                        hideConfirm(ev);
+                        tipsFn('err', '文件不能移入到本身')
+                        return;
                     }
-                    treeWrap.innerHTML = treeFileHtml(data);  //渲染列表
-                    treeWrap.querySelector('ul').style.display = 'block';
-                    $S('.tree-title', treeMenu)[0].on = true;
-                    var treeTitles = $S('.tree-title', treeMenu);
+                    selectIds.push(id);
                 }
-                console.log(treeWrap)
+                console.log(selectIds)
+                ajax({
+                    method: 'post',
+                    url: '/api/data/move',
+                    data: {
+                        upId: moveId,
+                        selectId: JSON.stringify(selectIds)
+                    },
+                    success: function(result){
+                        hideConfirm(ev);
+                        render();
+                        success(result);
+                    }
+                })
             }
-        })
-        function treeFileHtml(data, id){
-            var id = id || null;
-            var children = getChildren(data, id);
-            var sHtml = '<ul style="display: none;">';
-            children.forEach(function(item){
-                var level = getLevelById(data, item._id)
-                var pl = level*14 + 'px';
-                if(item._id === currentPid){
-                    removeClass($S('.tree-title', treeMenu)[0], 'tree-nav');
+        }
+        //隐藏删除提示框和遮罩层
+        function hideConfirm(ev) {
+            document.body.removeChild(confirm);
+            bk.style.display = 'none';
+            window.onresize = null;
+            ev.cancelBubble = true;
+        }
+        //渲染列表树
+        function renderConfirmTree(){
+            var pid = pid || currentPid;
+            ajax({
+                method: 'get',
+                url: '/api/data/getTree',
+                data: {
+                    pid: pid
+                },
+                success: function(result){
+                    var data = result.data;
+                    if(data.length === 0){
+                        $S('.ico', treeTitle)[0].style.display = 'none';
+                        removeClass(treeTitle, 'tree-contro-list');
+                        treeWrap.innerHTML = treeFileHtml(data);  //渲染列表
+                    }else{
+                        $S('.ico', treeTitle)[0].style.display = 'inline';
+                        if(treeTitle.on || treeTitle.on === undefined){
+                            addClass(treeTitle, 'tree-contro-list');
+                        }else{
+                            addClass(treeTitle, 'tree-contro');
+                        }
+                        treeWrap.innerHTML = treeFileHtml(data);  //渲染列表
+                        treeWrap.querySelector('ul').style.display = 'block';
+                        $S('.tree-title', treeMenu)[0].on = true;
+                        var treeTitles = $S('.tree-title', treeMenu);
+                    }
                 }
-                if(currentPid === 'null'){
-                    addClass($S('.tree-title', treeMenu)[0], 'tree-nav');
-                }
-                var triangleClass = '';
-                var displayStyle = 'display:none';
-                if(hasChildren(data, item._id)){
-                    triangleClass = 'tree-contro';
-                    displayStyle = 'display:inline'
-                }
-                sHtml += `
+            })
+            function treeFileHtml(data, id){
+                var id = id || null;
+                var children = getChildren(data, id);
+                var sHtml = '<ul style="display: none;">';
+                children.forEach(function(item){
+                    var level = getLevelById(data, item._id)
+                    var pl = level*14 + 'px';
+                    if(item._id === currentPid){
+                        removeClass($S('.tree-title', treeMenu)[0], 'tree-nav');
+                    }
+                    if(currentPid === 'null'){
+                        addClass($S('.tree-title', treeMenu)[0], 'tree-nav');
+                    }
+                    var triangleClass = '';
+                    var displayStyle = 'display:none';
+                    if(hasChildren(data, item._id)){
+                        triangleClass = 'tree-contro';
+                        displayStyle = 'display:inline'
+                    }
+                    sHtml += `
                     <li>
                         <div class="tree-title ${triangleClass}" data-file-id=${item._id}  style="padding-left:${pl}">
                             <span>
@@ -970,44 +1051,190 @@ function renameFileEvent() {
                         ${treeFileHtml(data, item._id)}
                     </li>
                 `;
-            })
-            sHtml += '</ul>';
-            return sHtml;
-        }
-    }
-    //事件委托、点击文件列表渲染
-    addEvent(treeMenu, 'click', function (ev) {
-        var target = getSelector(ev.target, '.tree-title');
-        if (target !== null) {
-            //找到 tree-title 元素
-            var fileId = target.dataset.fileId; //target.dataset.fileId是字符串
-            if (ev.target.className.indexOf('ico') !== -1) {
-                if (!target.on) {   //true表示当前列表为展开状态
-                    //展开列表
-                    removeClass(target, 'tree-contro'); 
-                    addClass(target, 'tree-contro-list');
-                    next(target).style.display = 'block';
-                } else {
-                    //隐藏
-                    if (hasChildren(fileId)) {
-                        removeClass(target, 'tree-contro-list'); 
-                        addClass(target, 'tree-contro');
-                    }
-                    next(target).style.display = 'none';
-                }
-                target.on = !target.on;
-            } else {
-                var treeList = Array.from($S('.tree-title', treeMenu));
-                treeList.forEach(function(item){
-                    removeClass(item, 'tree-nav');
                 })
-                addClass(target, 'tree-nav');
-                moveId = fileId;
+                sHtml += '</ul>';
+                return sHtml;
             }
         }
-});
-})()
+        //事件委托、点击文件列表渲染
+        addEvent(treeMenu, 'click', function (ev) {
+            var target = getSelector(ev.target, '.tree-title');
+            if (target !== null) {
+                //找到 tree-title 元素
+                var fileId = target.dataset.fileId; //target.dataset.fileId是字符串
+                if (ev.target.className.indexOf('ico') !== -1) {
+                    if (!target.on) {   //true表示当前列表为展开状态
+                        //展开列表
+                        removeClass(target, 'tree-contro');
+                        addClass(target, 'tree-contro-list');
+                        next(target).style.display = 'block';
+                    } else {
+                        //隐藏
+                        if (hasChildren(fileId)) {
+                            removeClass(target, 'tree-contro-list');
+                            addClass(target, 'tree-contro');
+                        }
+                        next(target).style.display = 'none';
+                    }
+                    target.on = !target.on;
+                } else {
+                    var treeList = Array.from($S('.tree-title', treeMenu));
+                    treeList.forEach(function(item){
+                        removeClass(item, 'tree-nav');
+                    })
+                    addClass(target, 'tree-nav');
+                    moveId = fileId;
+                }
+            }
+        });
+    }
+})();
 
+//文件上传弹窗
+(function(){
+    var mFile = $S('.m-upload')[0];
+    addEvent(mFile, 'click', function(){
+        var confirm = document.createElement('div');
+        confirm.className = 'g-file g-confirm';
+        confirm.innerHTML = `
+            <h3 class="g-file-header g-confirm-header"><div class="title">上传文件</div></h3>
+            <div class="g-file-content g-confirm-content">
+                <div class="mod-alert">
+                    <div class="alert-inner">
+                        <form action="/api/data/upload" method="post" size="4000000">
+                            <input type="file" name="file" id="file" style="position:absolute;overflow: hidden;width:0;height:0;">
+                            <label for="file">选择文件</label><p style="line-height: 24px;">只能上传MP3/MP4文件格式，文件大小不能超过10M。</p>
+                            <p class="alert-message ellipsis"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="g-file-btn g-confirm-btn">
+                <a class="btn ok f-inbl" href="javascript:void(0)">上传</a>
+                <a class="btn cancel f-inbl" href="javascript:void(0)">取消</a>
+            </div>
+            <div class="g-file-close g-confirm-close">×</div>
+        `;
+        document.body.appendChild(confirm);
+        bk.style.display = 'block';
+        elemMiddle(confirm);
+
+        var okBtn = $S('.ok', confirm)[0];
+        var cancelBtn = $S('.cancel', confirm)[0];
+        var closeBtn = $S('.g-file-close', confirm)[0];
+        var fileBtn = document.getElementById('file');
+        var alertMessage = $S('.alert-message', confirm)[0];
+        var file = document.getElementById('file');
+
+        //选择文件事件
+        addEvent(fileBtn, 'change', function(){
+            var f = this.files[0];
+            //if(file.type.)
+            addClass(alertMessage, 'ok');
+            alertMessage.innerHTML = f.name;
+        })
+
+        //上传取消按钮事件
+        addEvent(okBtn, 'click', uploadEvent);
+        addEvent(cancelBtn, 'click', hideConfirm);
+        addEvent(closeBtn, 'click', hideConfirm);
+
+        //上传事件
+        function uploadEvent(ev){
+            var f = file.files[0];
+            if(f.type.search(/mp3|mp4/) === -1){
+                alert('只能上传MP3、MP4文件格式');
+                return;
+            }
+            if(f.size > 10000000){
+                alert('文件大小不能超过10M');
+                return;
+            }
+
+            var wrap = document.querySelector('.g-upload-list');
+            //var perElem = document.querySelector('.g-upload-list .per');
+            //console.log(perElem)
+            //var progressBar = document.querySelector('.g-upload-list .progress-bar');
+            var perElem = null;
+            var progressBar = null;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('post', '/api/upload', true);
+
+            xhr.upload.onloadstart = function() {
+
+                var li = document.createElement('li');
+                li.innerHTML = `
+                    <div class="progress-bar-wrap">
+                       <div class="progress-bar"></div>
+                    </div>
+                    <p class="progress-con clearfix">
+                        <span class="per f-left">0%</span> <span class="upload-name f-right">${f.name}</span>
+                    </p>
+                `;
+                wrap.appendChild(li);
+
+                perElem = $S('.per', li)[0];
+                progressBar = $S('.progress-bar', li)[0];
+
+                perElem.innerHTML = '0%';
+                progressBar.style.width = '0%';
+            }
+            xhr.upload.onprogress = function(e) {
+                var n = e.loaded / e.total;
+                //toFixed保留指定位数的小数点
+                perElem.innerHTML = progressBar.style.width = (n * 100).toFixed(2) + '%';
+                //progressBar.style.width = 500 * n + 'px';
+            }
+            xhr.onload = function() {
+                perElem.innerHTML = '上传成功';
+                progressBar.style.width = '100%';
+                console.log(perElem)
+                success(JSON.parse(this.responseText))
+                render();
+            }
+            var fd = new FormData();
+            fd.append('file', f);
+            fd.append('pid', currentPid);
+            xhr.send(fd);
+
+            hideConfirm(ev);
+        }
+        //删除提示框和遮罩层
+        function hideConfirm(ev) {
+            document.body.removeChild(confirm);
+            bk.style.display = 'none';
+            window.onresize = null;
+            ev.cancelBubble = true;
+        }
+    })
+})();
+
+//文件上传列表弹窗
+(function(){
+    var btnUploadList = document.querySelector('.u-btn.u-btn-upload');
+    //弹出提示框元素
+    var confirm = $S('.g-confirm-upload')[0];
+    var okBtn = $S('.ok', confirm)[0];
+    var closeBtn = $S('.g-confirm-close', confirm)[0];
+
+    addEvent(btnUploadList, 'click', function(){
+        confirm.style.display = bk.style.display =  'block';
+        elemMiddle(confirm);
+    })
+
+    addEvent(okBtn, 'click', hideConfirm);
+    addEvent(closeBtn, 'click', hideConfirm);
+
+    //隐藏删除提示框和遮罩层
+    function hideConfirm(ev) {
+        confirm.style.display = bk.style.display = 'none';
+        window.onresize = null;
+        ev.cancelBubble = true;
+    }
+
+
+})();
 
 //ajax获取完数据执行函数
 function success(result){
@@ -1018,15 +1245,6 @@ function success(result){
     }
     render();
 }
-
-
-/*
- * 右键菜单
- * */
-var contextmenu = $S('contextmenu')[0];
-var ctxRemove = $S('.ctx-remove', contextmenu)[0];
-var ctxMove = $S('.ctx-move', contextmenu)[0];
-var ctxRename = $S('.ctx-rename', contextmenu)[0];
 
 addEvent(filecon, 'contextmenu', function (ev) {
     var target = getSelector(ev.target, '.m-file');
@@ -1042,20 +1260,7 @@ addEvent(filecon, 'contextmenu', function (ev) {
         context.style.top = ev.pageY + 'px';
     }
 });
-//右键菜单删除按钮
-addEvent(ctxRemove, 'click', function (ev) {
-    var aEle = whoSelect();
-    if (aEle.length === 0) {
-        tipsFn('err', '请选择文件');
-    } else {
-        showConfirm();
-    }
-});
-//右键菜单重命名按钮
-addEvent(ctxRename, 'click', function (ev) {
-    renameEvent(ev);
-    context.style.display = 'none';
-});
+
 //点击页面隐藏右键菜单
 addEvent(document, 'click', function () {
     context.style.display = 'none';
@@ -1074,11 +1279,23 @@ addEvent(document, 'mousedown', function (ev) {
 addEvent(document, 'contextmenu', function (ev) {
     ev.preventDefault();
 });
-// /*
-//  * 退出登录
-//  * */
-// var logOut = $S('.g-info')[0];
-// var logOutBtn = $S('a', logOut)[0];
-// addEvent(logOutBtn, 'click', function () {
-//     location.href = '/';
-// });
+
+//元素居中
+function elemMiddle(obj){
+    obj.style.left = (window.innerWidth - obj.offsetWidth) / 2 + 'px';
+    obj.style.top = (window.innerHeight - obj.offsetHeight) / 2 + 'px';
+    window.onresize = function(){
+        obj.style.left = (window.innerWidth - obj.offsetWidth) / 2 + 'px';
+        obj.style.top = (window.innerHeight - obj.offsetHeight) / 2 + 'px';
+    }
+}
+
+
+/*
+ * 退出登录
+ * */
+var logOut = $S('.g-info')[0];
+var logOutBtn = $S('a', logOut)[0];
+addEvent(logOutBtn, 'click', function () {
+    window.location.href = '/logout';
+});

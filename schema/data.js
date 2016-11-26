@@ -27,6 +27,32 @@ var data = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-})
+    originalname: {
+        type: String,
+        default: ''
+    },
+    encoding: {
+        type: String,
+        default: ''
+    },
+    mimetype: {
+        type: String,
+        default: ''
+    },
+    path: {
+        type: String,
+        default: ''
+    },
+    size: {
+        type: Number,
+        default: 0
+    },
+    suffix: {
+        type: String,
+        default: ''
+    }
+});
+
+
 
 module.exports = data;

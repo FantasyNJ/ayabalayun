@@ -1,34 +1,31 @@
 {% extends './layout.html' %}
 
-{% block title %}微云网页版{% endblock %}
+{% block title %}ayabala云盘网页版{% endblock %}
 
 {% block head %}
-<meta name="Keywords" content="QQ, 腾讯,微云, 分享, 网盘, 网络硬盘, U盘, 云存储, 传输, 存储, 同步, 备份, 拍照, 上传, 下载, 中转, 文件, 照片, 相册, 离线, 传文件, wifi, cloud, 微云网页版, weiyun, weiyun web">
-<meta name="Description" content="微云是腾讯公司为用户精心打造的一项智能云服务, 您可以通过微云方便地在手机和电脑之间同步文件、推送照片和传输数据。">
+<meta name="Keywords" content="ayabala,云盘, 分享, 网盘, 网络硬盘, U盘, 云存储, 传输, 存储, 同步, 备份, 拍照, 上传, 下载, 中转, 文件, 照片, 相册, 离线, 传文件, wifi, cloud, 云盘网页版">
+<meta name="Description" content="云盘是ayabala公司为用户精心打造的一项智能云服务, 您可以通过云盘方便地在手机和电脑之间同步文件、推送照片和传输数据。">
 <link rel="stylesheet" href="/common/css/reset.css">
 <link rel="stylesheet" href="/common/css/common.css">
 <link rel="stylesheet" href="/disk/css/index.css">
-<!--<script>-->
-    <!--if(!window.localStorage.getItem('user')){-->
-        <!--window.location.href = '/';-->
-    <!--}-->
-<!--</script>-->
 {% endblock %}
 
 {% block content %}
 <div class="g-header">
-    <h1><img src="/disk/img/web-logo.png" alt="腾讯微云网页版"></h1>
+    <h1><img src="/disk/img/web-logo.png" alt="ayabala云盘网页版"></h1>
     <div class="logout"><a href="javascript:;">退出登录</a></div>
 </div>
 <div class="g-side">
     <div class="g-upload">
-        <div class="m-upload"><i class="f-inbl">+</i><span class="f-inbl">上传</span></div>
+        <!--<input type="file" name="file" id="file" style="position:absolute;opacity:0;width:0;height:0;">-->
+        <div class="m-upload" for="file"><i class="f-inbl">+</i><span class="f-inbl">上传</span></div>
     </div>
     <ul class="g-list">
-        <li class="m-list list-current"><a href="javascript:;">目录</a></li>
+        <li class="m-list list-all"><a href="#all">目录</a></li>
         <li class="m-list-gap"><span></span></li>
-        <li class="m-list"><a href="javascript:;">文档</a></li>
-        <li class="m-list"><a href="javascript:;">图片</a></li>
+        <li class="m-list list-music"><a href="#music">音乐</a></li>
+        <!--<li class="m-list list-picture"><a href="javascript:;">图片</a></li>-->
+        <li class="m-list list-video"><a href="#video">视频</a></li>
     </ul>
 </div>
 <div class="g-main">
@@ -42,6 +39,7 @@
             <a class="u-btn mkdir" href="javascript:;"><span class="ico ico-mkdir"></span>新建文件夹</a>
         </div>
         <div class="g-btn-right">
+            <a class="u-btn u-btn-upload" href="javascript:;"><span class="ico ico-list"></span>上传列表</a>
             <a class="u-btn u-btn-list" href="javascript:;"><span class="ico ico-list"></span>文件列表</a>
         </div>
     </div>
@@ -105,62 +103,7 @@
     <a href="javascript:;" class="ctx-rename">重命名</a>
 </div>
 <div class="g-bk"></div>
-<div class="g-confirm">
-    <h3 class="g-confirm-header"><div class="title">删除文件</div></h3>
-    <div class="g-confirm-content">
-        <div class="mod-alert">
-            <div class="alert-inner">
-                <i class="ico"></i>
-                <h4 class="title">确定要删除文件夹吗？</h4>
-                <p class="info">已删除的文件可以在回收站找到</p>
-            </div>
-        </div>
-    </div>
-    <div class="g-confirm-btn">
-        <a class="btn ok f-inbl" href="javascript:void(0)">确定</a>
-        <a class="btn cancel f-inbl" href="javascript:void(0)">取消</a>
-    </div>
-    <div class="g-confirm-close">×</div>
-</div>
-<div class="g-move-confirm">
-    <h3 class="g-move-confirm-header"><div class="title">移动文件</div></h3>
-    <div class="g-move-confirm-content">
-        <div class="mod-alert">
-            <div class="alert-inner">
-                <div class="tree-menu">
-                    <ul>
-                        <li>
-                            <div class="tree-title" data-file-id="null" style="padding-left:14px;">
-                                <span>
-                                    <strong class="ellipsis">云盘</strong>
-                                    <i class="ico"></i>
-                                </span>
-                            </div>
-                            <div class="tree-wrap">
-                                <!-- <ul>
-                                    <li>
-                                        <div class="tree-title tree-contro" style="padding-left: 24px;">
-                                            <span>
-                                                <strong class="ellipsis">我的文档</strong>
-                                                <i class="ico"></i>
-                                            </span>
-                                        </div>
-                                        <ul></ul>
-                                    </li>
-                                </ul> -->
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="g-move-confirm-btn">
-        <a class="btn ok f-inbl" href="javascript:void(0)">确定</a>
-        <a class="btn cancel f-inbl" href="javascript:void(0)">取消</a>
-    </div>
-    <div class="g-move-confirm-close">×</div>
-</div>
+
 <div class="drag-move">
     <div class="icons">
         <!--<span class="icon"></span>-->
@@ -168,21 +111,42 @@
     <span class="sum"></span>
 </div>
 <div class="full-tip-box">
-        <span class="full-tip">
-            <span class="inner">
-                <i class="ico"></i>
-                <span class="text" data-id="label"></span>
-            </span>
+    <span class="full-tip">
+        <span class="inner">
+            <i class="ico"></i>
+            <span class="text" data-id="label"></span>
         </span>
+    </span>
+</div>
+
+<div class="g-confirm g-confirm-upload">
+    <h3 class="g-confirm-header g-confirm-header-upload"><div class="title">上传文件</div></h3>
+    <div class="g-confirm-content g-confirm-content-upload">
+        <div class="mod-alert">
+            <div class="alert-inner">
+                <ul class="g-upload-list">
+                    <!--<li>-->
+                       <!--<div class="progress-bar-wrap">-->
+                           <!--<div class="progress-bar"></div>-->
+                       <!--</div>-->
+                        <!--<p class="progress-con clearfix">-->
+                            <!--<span class="per f-left">100%</span> <span class="upload-name f-right">aaaa.mp3</span>-->
+                        <!--</p>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="g-confirm-btn g-confirm-btn-upload">
+        <a class="btn ok f-inbl" href="javascript:void(0)">确定</a>
+    </div>
+    <div class="g-confirm-close g-confirm-close-upload">×</div>
 </div>
 {% endblock %}
 
 {% block script %}
-<script src="/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="/disk/js/nj.js"></script>
-<!-- <script src="/disk/js/datas.js"></script>
-<script src="/disk/js/tree.js"></script>
-<script src="/disk/js/func.js"></script> -->
 <script src="/disk/js/index.js"></script>
-<script src="js/test.js"></script>
+<script src="/disk/js/router.js"></script>
+<script></script>
 {% endblock %}

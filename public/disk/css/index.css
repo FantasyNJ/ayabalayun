@@ -12,7 +12,7 @@ html,body{width: 100%;overflow: hidden;}
 .g-side{width: 159px;position: absolute;left: 0;top: 51px;bottom: 0;border-right: 1px solid #d8dce5;background: #eaedf4;}
 /* 上传区域 */
 .g-upload{padding: 14px 0 10px 15px;}
-.m-upload{width: 130px;height: 36px;line-height: 36px;background: #3091f2;cursor: pointer;text-align: center;color: #fff;}
+.m-upload{display: block;width: 130px;height: 36px;line-height: 36px;background: #3091f2;cursor: pointer;text-align: center;color: #fff;border-radius: 5px;}
 .m-upload i{font-size: 22px;height: 22px;line-height: 22px;margin: 5px 4px 0 0;vertical-align: top;}
 .m-upload span{font-size: 13px;vertical-align: top;}
 
@@ -33,7 +33,7 @@ html,body{width: 100%;overflow: hidden;}
 .g-btn-left{float: left;}
 .g-btn-right{float: right;}
 
-.g-toolbar .u-btn{float: left;position: relative;height: 34px;line-height: 34px;margin-right: 5px;padding-right: 18px;border: 1px solid #c7c9cf;background: #fff;text-indent: 38px;}
+.g-toolbar .u-btn{float: left;position: relative;height: 34px;line-height: 34px;margin-right: 5px;padding-right: 18px;border: 1px solid #c7c9cf;background: #fff;text-indent: 38px;border-radius: 5px;}
 .g-toolbar .u-btn .ico{position: absolute;left: 18px;top: 9px;width: 20px;height: 20px;background: url(../img/ico-message.png) no-repeat;opacity: 0.6;filter: alpha(opacity=60);}
 .g-toolbar .u-btn .ico-down{background-position: 0 -359px;}
 .g-toolbar .u-btn .ico-share{background-position: 0 -393px;}
@@ -139,6 +139,8 @@ html,body{width: 100%;overflow: hidden;}
 .m-file .img{height: 72px;text-align: center;overflow: hidden;}
 .m-file .img span{width: 64px;height: 59px;margin-top: 8px;background: url(../img/file.png) no-repeat 0 0;}
 .m-file .img .img-folder{background-position: 0 0;}
+.m-file .img .img-mp3{background-position: 0px -685px;}
+.m-file .img .img-mp4{background-position: -228px -457px;}
 .m-file .name{height: 25px;line-height: 25px;padding: 5px;text-align: center;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .m-file .name input{width: 100px;height: 20px;line-height: 20px;text-align: center;}
 
@@ -176,31 +178,37 @@ html,body{width: 100%;overflow: hidden;}
 .g-bk{display: none;position: fixed;width: 100%;height: 100%;left: 0;top: 0;background: #fff;opacity: 0.65;z-index: 100;}
 
 /* 删除弹窗 */
-.g-confirm{display: none;position: absolute;left: 0;top: 0;width: 400px;border: solid 1px #9198a6;box-shadow: 1px 1px 6px rgba(0,0,0,0.3);color: #020202;background: #fff;z-index: 110;}
-.g-confirm-header{height: 48px;line-height: 48px;border-bottom: solid 1px #d8dce5;font-weight: normal;font-size: 18px;padding-left: 18px;padding-right: 40px;cursor: move;}
+.g-confirm{position: absolute;left: 0;top: 0;width: 400px;border: solid 1px #9198a6;box-shadow: 1px 1px 6px rgba(0,0,0,0.3);color: #020202;background: #fff;z-index: 110;border-radius: 8px;}
+.g-confirm-header{height: 48px;line-height: 48px;border-bottom: solid 1px #d8dce5;font-weight: normal;font-size: 18px;padding-left: 18px;padding-right: 40px;}
 .g-confirm-close{position: absolute;right: 10px;top: 6px;width: 34px;height: 34px;line-height: 34px;text-align: center;color: #c7ced8;font-size: 34px;cursor: pointer;}
 .g-confirm-content .mod-alert{padding: 32px 24px 24px 32px;}
 .g-confirm-content .alert-inner{position: relative;padding-left: 46px;padding-top: 6px;}
-.g-confirm-content .ico{position: absolute;width: 34px;height: 34px;left: 0px;top: 0px;background: url(../img/ico-alert.png) no-repeat 0 0;}
+.g-confirm-content .ico-alert{position: absolute;width: 34px;height: 34px;left: 0px;top: 0px;background: url(../img/ico-alert.png) no-repeat 0 0;}
 .g-confirm-content .title{max-width: 300px;color: #020202;font-size: 16px;font-weight: normal;float: none;padding: 0;}
 .g-confirm-content .info{max-width: 300px;font-size: 12px;color: #868686;margin-top: 10px;}
 .g-confirm-btn{padding: 24px;padding-top: 0;text-align: right;}
-.g-confirm-btn .btn{font-size: 13px;margin-left: 5px;height: 34px;line-height: 34px;padding: 0 18px;text-align: center;}
+.g-confirm-btn .btn{font-size: 13px;margin-left: 5px;height: 34px;line-height: 34px;padding: 0 18px;text-align: center;border-radius: 5px;}
 .g-confirm-btn .ok{background: #3091f2;color: #FFF;border: 1px #288cef solid;}
 .g-confirm-btn .cancel{background: #ffffff;color: #505254;border: 1px #c7c9cf solid;}
 
 /* 移动到弹窗 */
-.g-move-confirm{display: none;position: absolute;left: 0;top: 0;width: 400px;border: solid 1px #9198a6;box-shadow: 1px 1px 6px rgba(0,0,0,0.3);color: #020202;background: #fff;z-index: 110;}
-.g-move-confirm-header{height: 48px;line-height: 48px;border-bottom: solid 1px #d8dce5;font-weight: normal;font-size: 18px;padding-left: 18px;padding-right: 40px;cursor: move;}
-.g-move-confirm-close{position: absolute;right: 10px;top: 6px;width: 34px;height: 34px;line-height: 34px;text-align: center;color: #c7ced8;font-size: 34px;cursor: pointer;}
-.g-move-confirm-content .mod-alert{padding: 32px 24px 24px 32px;}
 .g-move-confirm-content .alert-inner{position: relative;padding: 6px;border: 1px solid #ccc;height: 200px;overflow: auto;}
-.g-move-confirm-content .title{max-width: 300px;color: #020202;font-size: 16px;font-weight: normal;float: none;padding: 0;}
-.g-move-confirm-content .info{max-width: 300px;font-size: 12px;color: #868686;margin-top: 10px;}
-.g-move-confirm-btn{padding: 24px;padding-top: 0;text-align: right;}
-.g-move-confirm-btn .btn{font-size: 13px;margin-left: 5px;height: 34px;line-height: 34px;padding: 0 18px;text-align: center;}
-.g-move-confirm-btn .ok{background: #3091f2;color: #FFF;border: 1px #288cef solid;}
-.g-move-confirm-btn .cancel{background: #ffffff;color: #505254;border: 1px #c7c9cf solid;}
+/* 上传弹窗 */
+.g-file {width: initial;}
+.g-file .alert-inner{width: 300px;height: 70px;padding: 10px;}
+.g-file .alert-inner label{display: inline-block;background-color: #3091f2;color: #fff;line-height: 34px;padding: 0 18px;cursor: pointer;border-radius: 5px;}
+.g-file .alert-message{height: 40px;line-height: 40px;}
+.g-file .alert-message.warn{color: #ff3636;}
+.g-file .alert-message.ok{color: #02a715;}
+
+/* 上传列表弹窗 */
+.g-confirm-upload{display: none;}
+.g-upload-list li{padding: 5px 0;}
+.progress-con{text-align: justify;padding: 3px 0;}
+.g-confirm-upload .alert-inner{padding: 0;}
+.progress-bar-wrap{overflow: hidden;}
+.progress-bar{height: 14px;background-color: #3A97F6;width: 0%;border-radius: 7px;}
+.g-confirm-upload .upload-name{display: inline-block;width: 80%;text-align: right;}
 
 
 /* 提示小标签 */

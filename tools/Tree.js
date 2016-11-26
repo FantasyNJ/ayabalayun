@@ -87,8 +87,9 @@ Tree.prototype.getSonsId = function(id){
     var arr = [];
     for(var i = 0;i < data.length;i++){
         if(data[i].pid == id){  //注意是==不是===
+            //console.log(data[i]._id)
             arr.push(String(data[i]._id));
-            arr = arr.concat(this.getSons(String(data[i]._id)));
+            arr = arr.concat(this.getSonsId(String(data[i]._id)));
         }
     }
     return arr;
@@ -109,31 +110,55 @@ Tree.prototype.getFolderSons = function(id){
 //moveId 需要被移入的文件夹的id
 Tree.prototype.isChild = function(moveId, targetId){
     var arr = this.getSonsId(moveId);
-    // arr.forEach(function(item){
     for(var i = 0;i < arr.length;i++){
         var item = arr[i];
-        console.log(item,targetId)
-        console.log(typeof item,typeof targetId)
-        console.log(item === targetId)
         if(item === targetId){
             return true;
         }
     }
-        
-    // })
     return false;
 }
 
+//Tree.prototype.getList = function(pid, type) {
+//    var data = [];
+//    for (var i=0; i<this.data.length; i++) {
+//        if ( this.data[i].pid == pid && this.data[i].isRemove == false ) {
+//
+//            if (type === undefined) {
+//                data.push(this.data[i]);
+//            } else {
+//                type = Boolean(type);
+//                if ( this.data[i].type === type ) {
+//                    data.push(this.data[i]);
+//                }
+//            }
+//        }
+//    }
+//    return data;
+//};
+
+//获取所有没有被删除的MP3音乐文件
+Tree.prototype.getMusic = function(){
+    var data = this.data;
+    var arr = [];
+    data.forEach(function(item){
+        if(item.type === 'mp3' && item.isRemove === false){
+            arr.push(item);
+        }
+    })
+    return arr;
+}
+
+//获取所有没有被删除的MP4音乐文件
+Tree.prototype.getVideo = function(){
+    var data = this.data;
+    var arr = [];
+    data.forEach(function(item){
+        if(item.type === 'mp4' && item.isRemove === false){
+            arr.push(item);
+        }
+    })
+    return arr;
+}
+
 module.exports = Tree;
-
-
-
-
-
-
-
-
-
-
-
-

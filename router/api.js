@@ -4,7 +4,30 @@ var router = express.Router();
 //user数据库
 var User = require('../models/User');
 var Data = require('../models/Data');
-var Tree = require('../tools/Tree')
+var Tree = require('../tools/Tree');
+//上传
+var multer  = require('multer');
+var fs = require('fs');
+
+//上传初始化
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        var saveDir = './data/' + req.userInfo._id;
+        if (!fs.existsSync(saveDir)) {
+            fs.mkdirSync(saveDir);
+        }
+        cb(null, saveDir);
+    },
+    filename: function (req, file, cb) {
+        var dotIndex = file.originalname.lastIndexOf('.');
+        var filename = file.originalname.substring(0, dotIndex);
+        var suffix = file.originalname.substring( dotIndex );
+        file.suffix = suffix;
+        cb(null, filename + '_' +Date.now() + suffix);
+    }
+});
+
+var upload = multer({ storage: storage });
 
 /*
 * user部分
@@ -156,6 +179,7 @@ router.post('/user/login', function(req, res, next){
 
 
 
+
 /*
 * data部分
 * _id
@@ -255,6 +279,10 @@ router.get('/data/getTree', checkAuth, function(req, res){
 router.post('/data/move', checkAuth, function(req, res){
     var upId = req.body.upId;
     var selectId = JSON.parse(req.body.selectId);
+    if(upId === 'null' || upId === undefined){
+        upId = null;
+    }
+    
     for(var i = 0;i < selectId.length;i++){
         var data = req.filesTree.get(selectId[i]);
         var name = data.name;
@@ -330,10 +358,95 @@ router.post('/data/remove', checkAuth, function(req, res){
     Data.remove({
         _id: {$in: removeIds}
     }).then(function(){
+
+        //删除实体文件
+        for (var i=0; i<removeIds.length; i++) {
+            try {
+                fs.unlinkSync('./' + req.filesTree.get(removeIds[i]).path);
+            } catch(e) {}
+        }
+
         res.responseData.message = '文件夹删除成功';
         res.sendJSON();
     })
 })
+
+//上传文件
+
+router.post('/upload', checkAuth, upload.single('file'), function(req, res) {
+
+    var pid = req.body.pid;
+    if(pid === 'null' || pid === undefined){
+        pid = null;
+    }
+
+    if ( pid !== null ) {
+        var parentInfo = req.filesTree.get(pid);
+        if ( !parentInfo ) {
+            res.responseData.code = 1;
+            res.responseData.message = '所在父级不存在';
+            res.sendJSON();
+            return;
+        }
+        if ( parentInfo.type !== 'folder' ) {
+            res.responseData.code = 2;
+            res.responseData.message = '目标父级不是一个文件夹';
+            res.sendJSON();
+            return;
+        }
+    }
+
+    //获取文件夹下的一级子文件
+    var list = req.filesTree.getChildren(pid);
+    req.file.name = req.file.originalname;
+    for (var i=0; i<list.length; i++) {
+        if ( list[i].name == req.file.originalname ) {
+            req.file.name = Date.now() + req.file.originalname;
+            break;
+        }
+    }
+
+    //var typeArr = req.file.mimetype.split('/');
+    //req.file.type = typeArr[typeArr.length - 1];
+    req.file.type = req.file.suffix.substring(1);
+
+    console.log(req);
+
+    //保存文件
+    var data = new Data({
+        pid: pid,
+        name: req.file.name,
+        user_id: req.userInfo._id,
+        type: req.file.type,
+        originalname: req.file.originalname,
+        encoding: req.file.encoding,
+        mimetype: req.file.mimetype,
+        path: req.file.path,
+        size: req.file.size,
+        suffix: req.file.suffix
+    });
+    data.save().then(function( dataInfo ) {
+        res.responseData.message = '上传成功';
+        res.sendJSON();
+    });
+
+});
+
+//获取mp3音乐
+router.get('/data/getMusic', checkAuth, function(req, res){
+    var data = req.filesTree.getMusic();
+    res.responseData.message = '获取文件成功';
+    res.responseData.data = data;
+    res.sendJSON();
+});
+
+//获取mp4视频
+router.get('/data/getVideo', checkAuth, function(req, res){
+    var data = req.filesTree.getVideo();
+    res.responseData.message = '获取文件成功';
+    res.responseData.data = data;
+    res.sendJSON();
+});
 
 //检测用户权限以及获取用户数据
 function checkAuth(req, res, next) {

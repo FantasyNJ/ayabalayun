@@ -22,4 +22,10 @@ router.get('/disk', function(req, res){
 
 })
 
+//退出登录
+router.get('/logout', function(req, res) {
+    req.cookies.set('userInfo', null);
+    res.redirect('/');
+})
+
 module.exports = router;
