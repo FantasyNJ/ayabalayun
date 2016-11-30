@@ -14,9 +14,8 @@
     window.onhashchange = hashChange;
 
     function hashChange(){
-        console.log(1)
         var hash = window.location.hash.substring(1);
-
+        //目录
         if(hash === '' || hash === 'all'){
             var listItem = document.querySelector('.m-list.list-all');
             render();
@@ -26,7 +25,7 @@
 
             return;
         }
-
+        //音乐
         if(hash === 'music'){
             var listItem = document.querySelector('.m-list.list-music');
             renderMediaFile('/api/data/getMusic');
@@ -36,7 +35,7 @@
 
             return;
         }
-
+        //视频
         if(hash === 'video'){
             var listItem = document.querySelector('.m-list.list-video');
             renderMediaFile('/api/data/getVideo');
@@ -55,47 +54,55 @@
     }
 
     function hideElem(){
-        gBtnLeft.style.visibility = gBtnRight.style.visibility = gPath.style.visibility = 'hidden';
+        var hiddenElem = document.querySelectorAll('a[data-hidden=hidden]');
+        hiddenElem.forEach(function(item){
+            item.style.display = 'none';
+        })
         fileShow.style.left = 0;
         toolBtnList.isShow = false;
     }
     function showElem(){
-        gBtnLeft.style.visibility = gBtnRight.style.visibility = gPath.style.visibility = 'visible';
+        //gBtnLeft.style.visibility = gBtnRight.style.visibility = gPath.style.visibility = 'visible';
+        var hiddenElem = document.querySelectorAll('a[data-hidden=hidden]');
+        hiddenElem.forEach(function(item){
+            item.style.display = '';
+        })
         fileShow.style.left = '165px';
         toolBtnList.isShow = true;
     }
 
-    function renderMediaFile(url) {
-        filecon.innerHTML = '';
-        ajax({
-            method : 'get',
-            url : url,
-            success : function (result) {
-                var datas = result.data;
-                var sHtml = '';
-                datas.forEach(function (item) {
-                    sHtml += fileHtml(item);
-                });
-                filecon.innerHTML = sHtml;
-                //checkbox点击事件
-                var checkbox = $S('.checkbox', filecon);
-
-                function checkboxEvent(i) {
-                    addEvent(checkbox[i], 'mouseup', function (ev) {
-                        ev.stopPropagation();
-                        var p = aFile[i];
-                        toggleClass(p, 'checked');
-                        //改变全选按钮状态
-                        changeAllBtnStatus();
-                        document.onmousemove = document.onmouseup = null;
-                    });
-                };
-
-                for (var i = 0; i < checkbox.length; i++) {
-                    checkboxEvent(i);
-                }
-            },
-        })
-    }
-
 })()
+
+function renderMediaFile(url) {
+    filecon.innerHTML = '';
+    ajax({
+        method : 'get',
+        url : url,
+        success : function (result) {
+            var datas = result.data;
+            var sHtml = '';
+            datas.forEach(function (item) {
+                sHtml += fileHtml(item);
+            });
+            filecon.innerHTML = sHtml;
+            //checkbox点击事件
+            var checkbox = $S('.checkbox', filecon);
+
+            function checkboxEvent(i) {
+                addEvent(checkbox[i], 'mouseup', function (ev) {
+                    ev.stopPropagation();
+                    var p = aFile[i];
+                    toggleClass(p, 'checked');
+                    //改变全选按钮状态
+                    changeAllBtnStatus();
+                    document.onmousemove = document.onmouseup = null;
+                });
+            };
+            //改变全选按钮状态
+            changeAllBtnStatus();
+            for (var i = 0; i < checkbox.length; i++) {
+                checkboxEvent(i);
+            }
+        },
+    })
+}

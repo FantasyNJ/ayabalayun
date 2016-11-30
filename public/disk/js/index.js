@@ -133,18 +133,23 @@ addEvent(all, 'click', function () {
     }
 });
 
-//文件夹添加点击事件,事件委托
+//文件夹添加点击事件,事件委托,点击进入文件夹
 addEvent(filecon, 'mouseup', function (ev) {
     var target = getSelector(ev.target, '.m-file');
     if (target && !isMove && ev.button === 0) {
         //如果不是移动时在文件夹上抬起并且是鼠标左键
         if(target.dataset.fileType !== 'folder'){  //不是文件夹，不执行
+            var _id = target.dataset.fileId;
+            console.log(_id);
+            window.open('/api/data/getDownload?_id=' + _id,'_blank');
+            isMove = false;
             return;
+        }else{
+            currentPid = target.dataset.fileId;
+            render();
+            listOn[currentPid] = true;
+            document.onmousemove = document.onmouseup = null;
         }
-        currentPid = target.dataset.fileId;
-        render();
-        listOn[currentPid] = true;
-        document.onmousemove = document.onmouseup = null;
     }
     isMove = false;
 });
@@ -221,6 +226,7 @@ addEvent(treeMenu, 'click', function (ev) {
  */
 //渲染整个页面所有模块的文件列表
 function render(pid){
+    window.location.hash = 'all';
     var pid = pid || currentPid;
     removeClass(all, 'checked');
 
@@ -505,6 +511,7 @@ function whoSelect() {
 function isAll() {
     var arr = whoSelect();
     if (arr.length === aFile.length && aFile.length !== 0) {
+        console.log(aFile.length)
         return true;
     } else {
         return false;
@@ -608,13 +615,13 @@ addEvent(filecon, 'mousedown', function (ev) {
         document.onmouseup = function (ev) {
             console.log(disX, ev.pageX, disY, ev.pageY);
             //防止无法进入文件夹
-            if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
-                console.log(disX - ev.pageX, disY - ev.pageY);
-                currentPid = target.dataset.fileId;
-                render();
-                document.onmousemove = document.onmouseup = null;
-                return;
-            }
+            //if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
+            //    console.log(disX - ev.pageX, disY - ev.pageY);
+            //    currentPid = target.dataset.fileId;
+            //    render();
+            //    document.onmousemove = document.onmouseup = null;
+            //    return;
+            //}
             dragmove.style.display = 'none';
             dragmoveIcon.innerHTML = '';
             for (var i = 0; i < aFile.length; i++) {
@@ -840,10 +847,26 @@ function up(ev, sObj) {
                     removeIds: JSON.stringify(removeIds)
                 },
                 success: function(result){
-                    success(result);
+                    if( !result.code ){
+                        tipsFn('ok', result.message);
+                    }else{
+                        tipsFn('err', result.message);
+                    }
+                    //根据hash值删除元素
+                    var hash = window.location.hash.substring(1);
+                    if(hash === '' || hash === 'all') {  //目录
+                        console.log('all')
+                        render();
+                    }else if(hash === 'music'){ //音乐
+                        console.log('music')
+                        renderMediaFile('/api/data/getVideo');
+                    }else if(hash === 'video'){ //视频
+                        console.log('video')
+                        renderMediaFile('/api/data/getVideo');
+                    }
                 }
             })
-            render();
+
             hideConfirm(ev);
             changeAllBtnStatus();
             window.onresize = null;
@@ -1026,7 +1049,7 @@ function up(ev, sObj) {
                 var children = getChildren(data, id);
                 var sHtml = '<ul style="display: none;">';
                 children.forEach(function(item){
-                    var level = getLevelById(data, item._id)
+                    var level = getLevelById(data, item._id);
                     var pl = level*14 + 'px';
                     if(item._id === currentPid){
                         removeClass($S('.tree-title', treeMenu)[0], 'tree-nav');
@@ -1146,10 +1169,10 @@ function up(ev, sObj) {
                 alert('只能上传MP3、MP4文件格式');
                 return;
             }
-            if(f.size > 10000000){
-                alert('文件大小不能超过10M');
-                return;
-            }
+            //if(f.size > 10000000){
+            //    alert('文件大小不能超过10M');
+            //    return;
+            //}
 
             var wrap = document.querySelector('.g-upload-list');
             //var perElem = document.querySelector('.g-upload-list .per');

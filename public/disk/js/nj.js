@@ -322,16 +322,17 @@ function ajax(obj) {
 	} else {
 		xhr.send(null);		//get方式则填null
 	}
-	if (obj.async === false) {  //同步
-		callback();
-	}
-	function callback() {
-		if (xhr.status == 200) {  //判断http的交互是否成功，200表示成功
-			obj.success(JSON.parse(xhr.responseText));	//回调传递参数,解析JSON
-		} else {
-			alert('获取数据错误！错误代号：' + xhr.status + '，错误信息：' + xhr.statusText);
-		}	
-	}
+	//如果有回调函数执行，否则只发送请求
+    if (obj.async === false) {  //同步
+        callback();
+    }
+    function callback() {
+        if (xhr.status == 200) {  //判断http的交互是否成功，200表示成功
+            obj.success(JSON.parse(xhr.responseText));	//回调传递参数,解析JSON
+        } else {
+            alert('获取数据错误！错误代号：' + xhr.status + '，错误信息：' + xhr.statusText);
+        }
+    }
 }
 //名值对转换为字符串
 function params(data) {

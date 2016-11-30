@@ -8,6 +8,8 @@ var Tree = require('../tools/Tree');
 //上传
 var multer  = require('multer');
 var fs = require('fs');
+//文件路径
+var path = require('path');
 
 //上传初始化
 var storage = multer.diskStorage({
@@ -141,7 +143,7 @@ router.post('/user/register', function(req, res, next){
  * <string>username : 用户要注册的用户名
  * <string>password : 用户要注册的密码
  * */
-router.post('/user/login', function(req, res, next){
+router.post('/user/login', function(req, res){
     var username = req.body.username || '';
     var password = req.body.password || '';
 
@@ -282,13 +284,19 @@ router.post('/data/move', checkAuth, function(req, res){
     if(upId === 'null' || upId === undefined){
         upId = null;
     }
+    if(upId !== null && req.filesTree.get(upId).type !== 'folder' ){
+        res.responseData.message = '只能移入文件夹';
+        res.responseData.code = 1;
+        res.sendJSON();
+        return;
+    }
     
     for(var i = 0;i < selectId.length;i++){
         var data = req.filesTree.get(selectId[i]);
         var name = data.name;
         if(req.filesTree.isNameRepeat(upId, name)){
             res.responseData.message = '有重名文件，不能移入！';
-            res.responseData.code = 1;
+            res.responseData.code = 2;
             res.sendJSON();
             return;
         }
@@ -296,7 +304,7 @@ router.post('/data/move', checkAuth, function(req, res){
 
     for(var i = 0;i < selectId.length;i++){
         if(req.filesTree.isChild(selectId[i], upId)){
-            res.responseData.code = 1;
+            res.responseData.code = 3;
             res.responseData.message = '目标是子级，不能移动';
             res.sendJSON();
             return;
@@ -410,7 +418,6 @@ router.post('/upload', checkAuth, upload.single('file'), function(req, res) {
     //req.file.type = typeArr[typeArr.length - 1];
     req.file.type = req.file.suffix.substring(1);
 
-    console.log(req);
 
     //保存文件
     var data = new Data({
@@ -447,6 +454,30 @@ router.get('/data/getVideo', checkAuth, function(req, res){
     res.responseData.data = data;
     res.sendJSON();
 });
+//获取下载
+router.get('/data/getDownload', checkAuth, function(req, res){
+    var _id = req.query._id;
+    console.log(_id)
+    var dataInfo = req.filesTree.get(_id);
+    console.log(dataInfo)
+    var pathName = dataInfo.path;
+    var fileName = dataInfo.name;
+
+    console.log( fileName )
+    res.download( pathName, fileName, function(err){
+        if (err) {
+            // 处理错误，请牢记可能只有部分内容被传输，所以
+            // 检查一下res.headerSent
+            console.log(err)
+        } else {
+            // 减少下载的积分值之类的
+            console.log('ok')
+        }
+    });
+
+    //res.responseData.message = 'nihao';
+    //res.sendJSON();
+})
 
 //检测用户权限以及获取用户数据
 function checkAuth(req, res, next) {
