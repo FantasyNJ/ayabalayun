@@ -39,6 +39,9 @@ var context = $S('.contextmenu')[0];
 var contextBtn = $S('a', context);
 //弹窗背景
 var bk = $S('.g-bk')[0];
+//当前hash值
+var hash = window.location.hash.substring(1);
+
 
 
 //展开、收起文件列表
@@ -134,13 +137,13 @@ addEvent(all, 'click', function () {
 });
 
 //文件夹添加点击事件,事件委托,点击进入文件夹
-addEvent(filecon, 'mouseup', function (ev) {
+addFileClickEvent();
+function fileClickEvent(ev){
     var target = getSelector(ev.target, '.m-file');
     if (target && !isMove && ev.button === 0) {
         //如果不是移动时在文件夹上抬起并且是鼠标左键
         if(target.dataset.fileType !== 'folder'){  //不是文件夹，不执行
             var _id = target.dataset.fileId;
-            console.log(_id);
             window.open('/api/data/getDownload?_id=' + _id,'_blank');
             isMove = false;
             return;
@@ -152,7 +155,14 @@ addEvent(filecon, 'mouseup', function (ev) {
         }
     }
     isMove = false;
-});
+}
+function addFileClickEvent(){
+    addEvent(filecon, 'mouseup', fileClickEvent);
+}
+function removeFileClickEvent(){
+    removeEvent(filecon, 'mouseup', fileClickEvent);
+}
+
 
 //拖拽框选择文件夹
 addEvent(filewrap, 'mousedown', function (ev) {
@@ -511,7 +521,6 @@ function whoSelect() {
 function isAll() {
     var arr = whoSelect();
     if (arr.length === aFile.length && aFile.length !== 0) {
-        console.log(aFile.length)
         return true;
     } else {
         return false;
@@ -775,7 +784,7 @@ function up(ev, sObj) {
 
 
 /*
- * 文件夹删除
+ * 文件夹移动到回收站
  * */
 (function(){
 
@@ -842,7 +851,7 @@ function up(ev, sObj) {
             }
             ajax({
                 method: 'post',
-                url: '/api/data/remove',
+                url: '/api/data/recylebin',
                 data: {
                     removeIds: JSON.stringify(removeIds)
                 },
@@ -853,7 +862,7 @@ function up(ev, sObj) {
                         tipsFn('err', result.message);
                     }
                     //根据hash值删除元素
-                    var hash = window.location.hash.substring(1);
+                    hash = window.location.hash.substring(1);
                     if(hash === '' || hash === 'all') {  //目录
                         console.log('all')
                         render();
@@ -881,6 +890,7 @@ function up(ev, sObj) {
         }
     }
 })();
+
 
 
 //移动文件夹提示框
@@ -1113,6 +1123,76 @@ function up(ev, sObj) {
     }
 })();
 
+/*
+* 文件还原
+* */
+(function(){
+    var restoreBtn = document.querySelector('.u-btn.restore');
+    addEvent(restoreBtn, 'click', function(){
+        var aEle = whoSelect();
+        if (aEle.length === 0) {
+            tipsFn('err', '请选择文件');
+        }else{
+            var restoreIds = [];
+            for (var i = 0; i < aEle.length; i++) {
+                var id = aEle[i].dataset.fileId;
+                restoreIds.push(id);
+            }
+            ajax({
+                method: 'post',
+                url: '/api/data/restore',
+                data: {
+                    restoreIds: JSON.stringify(restoreIds)
+                },
+                success: function(result){
+                    if( !result.code ){
+                        tipsFn('ok', result.message);
+                    }else{
+                        tipsFn('err', result.message);
+                    }
+                    renderMediaFile('/api/data/getRecycleBin');
+                }
+            })
+            changeAllBtnStatus();
+        }
+    })
+})();
+
+/*
+* 文件彻底删除
+* */
+(function(){
+    var removeBtn = document.querySelector('.u-btn.remove');
+    addEvent(removeBtn, 'click', function(){
+        var aEle = whoSelect();
+        if (aEle.length === 0) {
+            tipsFn('err', '请选择文件');
+        }else{
+            var removeIds = [];
+            for (var i = 0; i < aEle.length; i++) {
+                var id = aEle[i].dataset.fileId;
+                removeIds.push(id);
+            }
+            ajax({
+                method: 'post',
+                url: '/api/data/remove',
+                data: {
+                    removeIds: JSON.stringify(removeIds)
+                },
+                success: function(result){
+                    if( !result.code ){
+                        tipsFn('ok', result.message);
+                    }else{
+                        tipsFn('err', result.message);
+                    }
+                    renderMediaFile('/api/data/getRecycleBin');
+                }
+            })
+            changeAllBtnStatus();
+        }
+    })
+})();
+
 //文件上传弹窗
 (function(){
     var mFile = $S('.m-upload')[0];
@@ -1212,7 +1292,6 @@ function up(ev, sObj) {
             xhr.onload = function() {
                 perElem.innerHTML = '上传成功';
                 progressBar.style.width = '100%';
-                console.log(perElem)
                 success(JSON.parse(this.responseText))
                 render();
             }
@@ -1322,3 +1401,145 @@ var logOutBtn = $S('a', logOut)[0];
 addEvent(logOutBtn, 'click', function () {
     window.location.href = '/logout';
 });
+
+
+
+
+/*
+* 路由部分
+* */
+
+(function(){
+    var list = document.querySelectorAll('.m-list');
+
+    var gBtnLeft = document.querySelector('.g-btn-left');
+    var gBtnRight = document.querySelector('.g-btn-right');
+    var gPath = document.querySelector('.g-path');
+    var mkdir = document.querySelector('.u-btn.mkdir');
+
+    var toolBtnList = $S('.u-btn-list', toolBar)[0]; //功能按钮
+    var fileShow = $S('.g-file-show')[0];
+
+    hashChange();
+    window.onhashchange = hashChange;
+
+    function hashChange(){
+        hash = window.location.hash.substring(1);
+        //显示删除按钮，防止回收站中隐藏后不显示
+        var delElem = document.querySelector('.u-btn.dele');
+        delElem.style.display = '';
+        //添加文件点击事件，防止回收站中删除
+        addFileClickEvent();
+
+        clearClass();
+        //目录
+        if(hash === '' || hash === 'all'){
+            var listItem = document.querySelector('.m-list.list-all');
+            render();
+            //clearClass();
+            showElem();
+            addClass(listItem, 'list-current');
+
+            return;
+        }
+        //音乐
+        if(hash === 'music'){
+            var listItem = document.querySelector('.m-list.list-music');
+            renderMediaFile('/api/data/getMusic');
+            //clearClass();
+            hideElem();
+            addClass(listItem, 'list-current');
+
+            return;
+        }
+        //视频
+        if(hash === 'video'){
+            var listItem = document.querySelector('.m-list.list-video');
+            renderMediaFile('/api/data/getVideo');
+            //clearClass();
+            hideElem();
+            addClass(listItem, 'list-current');
+
+            return;
+        }
+        if(hash === 'recylebin'){
+            var listItem = document.querySelector('.m-list.list-recylebin');
+            var removeElem = document.querySelectorAll('[data-remove=remove]');
+            delElem.style.display = 'none';
+
+            renderMediaFile('/api/data/getRecycleBin');
+            hideElem();
+            //显示删除功能按钮
+            removeElem.forEach(function(item){
+                item.style.display = 'inline-block';
+            })
+            addClass(listItem, 'list-current');
+
+            return;
+        }
+    }
+
+    function clearClass(){
+        list.forEach(function(item){
+            removeClass(item, 'list-current')
+        })
+    }
+
+    function hideElem(){
+        var hiddenElem = document.querySelectorAll('[data-hidden=hidden]');
+        hiddenElem.forEach(function(item){
+            item.style.display = 'none';
+        })
+        fileShow.style.left = 0;
+        toolBtnList.isShow = false;
+    }
+    function showElem(){
+        var hiddenElem = document.querySelectorAll('[data-hidden=hidden]');
+        hiddenElem.forEach(function(item){
+            item.style.display = '';
+        })
+        fileShow.style.left = '165px';
+        toolBtnList.isShow = true;
+    }
+
+})()
+
+//渲染媒体或回收站文件
+function renderMediaFile(url) {
+    filecon.innerHTML = '';
+    ajax({
+        method : 'get',
+        url : url,
+        success : function (result) {
+            var datas = result.data;
+            var sHtml = '';
+            datas.forEach(function (item) {
+                sHtml += fileHtml(item);
+            });
+            filecon.innerHTML = sHtml;
+            //checkbox点击事件
+            var checkbox = $S('.checkbox', filecon);
+
+            function checkboxEvent(i) {
+                addEvent(checkbox[i], 'mouseup', function (ev) {
+                    ev.stopPropagation();
+                    var p = aFile[i];
+                    toggleClass(p, 'checked');
+                    //改变全选按钮状态
+                    changeAllBtnStatus();
+                    document.onmousemove = document.onmouseup = null;
+                });
+            };
+            //改变全选按钮状态
+            changeAllBtnStatus();
+            for (var i = 0; i < checkbox.length; i++) {
+                checkboxEvent(i);
+            }
+            //如果是回收站，取消文件点击事件
+            if(hash === 'recylebin'){
+                removeFileClickEvent();
+            }
+        },
+    })
+}
+

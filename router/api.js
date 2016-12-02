@@ -352,9 +352,76 @@ router.post('/data/rename', checkAuth, function(req, res){
         res.sendJSON();
     })
 })
+/*
+*  文件移动到回收站
+* */
+router.post('/data/recylebin', checkAuth, function(req, res){
+    var removeIds = JSON.parse(req.body.removeIds);
+    var allRemoveIds = [];
+    //被删除的元素
+    Data.update({
+        _id: {$in: removeIds}
+    },{
+        isRemoveElem: true
+    }, {
+        multi: true
+    }).then(function(){
+
+    })
+    for(var i = 0; i < removeIds.length;i++){
+        var arr = req.filesTree.getSonsId(removeIds[i]);
+        allRemoveIds = removeIds.concat(arr)
+    }
+    //被删除的元素和子孙元素
+    Data.update({
+        _id: {$in: allRemoveIds}
+    },{
+        isRemove: true
+    }, {
+        multi: true
+    }).then(function(){
+        res.responseData.message = '移入回收站成功';
+        res.sendJSON();
+    })
+})
 
 /*
-* 文件夹重命名
+ *  文件还原
+ * */
+router.post('/data/restore', checkAuth, function(req, res){
+    var restoreIds = JSON.parse(req.body.restoreIds);
+    console.log(restoreIds)
+    var allIds = [];
+    for(var i = 0; i < restoreIds.length;i++){
+        var arr = req.filesTree.getSonsId(restoreIds[i]);
+        allIds = restoreIds.concat(arr);
+    }
+    //修改被删除的元素
+    Data.update({
+        _id: {$in: restoreIds}
+    },{
+        isRemoveElem: false,
+        pid: null
+    }, {
+        multi: true
+    }).then(function(){
+
+    })
+    //修改被删除的元素和子孙元素
+    Data.update({
+        _id: {$in: allIds}
+    },{
+        isRemove: false
+    }, {
+        multi: true
+    }).then(function(){
+        res.responseData.message = '还原成功';
+        res.sendJSON();
+    })
+})
+
+/*
+* 文件彻底删除
 * removeIds 要删除的文件夹_id  array
  */
 router.post('/data/remove', checkAuth, function(req, res){
@@ -380,7 +447,6 @@ router.post('/data/remove', checkAuth, function(req, res){
 })
 
 //上传文件
-
 router.post('/upload', checkAuth, upload.single('file'), function(req, res) {
 
     var pid = req.body.pid;
@@ -425,6 +491,7 @@ router.post('/upload', checkAuth, upload.single('file'), function(req, res) {
         name: req.file.name,
         user_id: req.userInfo._id,
         type: req.file.type,
+        createDate: Date.now(),
         originalname: req.file.originalname,
         encoding: req.file.encoding,
         mimetype: req.file.mimetype,
@@ -454,6 +521,13 @@ router.get('/data/getVideo', checkAuth, function(req, res){
     res.responseData.data = data;
     res.sendJSON();
 });
+//获取回收站中的文件和文件夹
+router.get('/data/getRecycleBin', checkAuth, function(req, res){
+    var data = req.filesTree.getRecycleBin();
+    res.responseData.message = '获取文件成功';
+    res.responseData.data = data;
+    res.sendJSON();
+})
 //获取下载
 router.get('/data/getDownload', checkAuth, function(req, res){
     var _id = req.query._id;

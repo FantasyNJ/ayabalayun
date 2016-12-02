@@ -27,6 +27,10 @@ var data = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isRemoveElem:{
+        type: Boolean,
+        default: false
+    },
     originalname: {
         type: String,
         default: ''

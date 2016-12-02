@@ -26,6 +26,8 @@
         <li class="m-list list-music"><a href="#music">音乐</a></li>
         <!--<li class="m-list list-picture"><a href="javascript:;">图片</a></li>-->
         <li class="m-list list-video"><a href="#video">视频</a></li>
+        <li class="m-list-gap"><span></span></li>
+        <li class="m-list list-recylebin"><a href="#recylebin">回收站</a></li>
     </ul>
 </div>
 <div class="g-main">
@@ -37,6 +39,8 @@
             <a class="u-btn rename" href="javascript:;" data-hidden="hidden"><span class="ico ico-rename"></span>重命名</a>
             <a class="u-btn dele" href="javascript:;"><span class="ico ico-del"></span>删除</a>
             <a class="u-btn mkdir" href="javascript:;" data-hidden="hidden"><span class="ico ico-mkdir"></span>新建文件夹</a>
+            <a class="u-btn restore" href="javascript:;" data-hidden="hidden" data-remove="remove"><span class="ico ico-restore"></span>还原</a>
+            <a class="u-btn remove" href="javascript:;" data-hidden="hidden" data-remove="remove"><span class="ico ico-remove"></span>彻底删除</a>
         </div>
         <div class="g-btn-right">
             <a class="u-btn u-btn-upload" href="javascript:;"><span class="ico ico-list"></span>上传列表</a>
@@ -74,7 +78,7 @@
         <div class="g-file-show">
             <div class="g-filepath">
                 <span class="checkbox" id="all"></span>
-                <div class="g-path">
+                <div class="g-path" data-hidden="hidden">
                     <a href="javascript:;" data-file-id="null" style="z-index:999;background-position: right -200px;">云盘</a>
                     <div class="g-path-tree"></div>
                 </div>

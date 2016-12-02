@@ -137,6 +137,17 @@ Tree.prototype.isChild = function(moveId, targetId){
 //    return data;
 //};
 
+//获取回收站中的元素
+Tree.prototype.getRecycleBin = function(){
+    var arr = [];
+    this.data.forEach(function(item){
+        if(item.isRemoveElem){
+            arr.push(item);
+        }
+    })
+    return arr;
+}
+
 //获取所有没有被删除的MP3音乐文件
 Tree.prototype.getMusic = function(){
     var data = this.data;

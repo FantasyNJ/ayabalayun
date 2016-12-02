@@ -17,7 +17,7 @@ html,body{width: 100%;overflow: hidden;}
 .m-upload span{font-size: 13px;vertical-align: top;}
 
 .m-list{padding: 2px 0 3px;}
-.m-list a{display: block;height: 32px;line-height: 32px;border-top: 1px solid transparent;border-bottom: 1px solid transparent;font-size: 14px;text-indent: 50px;}
+.m-list a{display: block;height: 32px;line-height: 32px;border-top: 1px solid transparent;border-bottom: 1px solid transparent;font-size: 14px;text-align: center;}
 .m-list a:hover{background: #e0e4ed;border-top: 1px solid #d8dce5;border-bottom: 1px solid #d8dce5;}
 .m-list.list-current a{background: #ced4e0;border-top: 1px solid #c8ccd5;border-bottom: 1px solid #c8ccd5;}
 
@@ -42,6 +42,12 @@ html,body{width: 100%;overflow: hidden;}
 .g-toolbar .u-btn .ico-del{background-position: 0 -328px;}
 .g-toolbar .u-btn .ico-mkdir{background-position: 0 -552px;}
 .g-toolbar .u-btn .ico-list{background-position: 0 -1096px;}
+.g-toolbar .u-btn .ico-restore{background-position: 0 -712px;}
+.g-toolbar .u-btn .ico-remove{background-position: 0 -775px;}
+
+.u-btn.restore, .u-btn.remove{display: none;}
+
+.g-toolbar .u-btn-upload .ico{background-position: 0 -1251px;}
 
 .g-toolbar .u-btn:hover{border-color: #a7adb7;}
 .g-toolbar .u-btn:hover .ico{opacity: 1;filter: alpha(opacity=100);}
