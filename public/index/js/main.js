@@ -24,7 +24,7 @@ $(function(){
         timer = setInterval(function(){
             n++;
             n %= len;
-            banner.animate({left:-n*width},500,function(){
+            banner.animate({left:-n*width},400,function(){
                 if(n === len-1){
                     banner.css('left', 0);
                     n = 0;
