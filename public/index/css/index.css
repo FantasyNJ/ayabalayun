@@ -1,7 +1,8 @@
 .m-wrap{width: 1211px;margin: 0 auto;}
 
 .m-header-wrap{height: 80px;}
-h1 a{float: left;margin-top: 29px;margin-left: 14px;width: 81px;height: 26px;background: url(../img/index.png) -630px -121px;}
+/*h1 a{float: left;margin-top: 29px;margin-left: 14px;width: 81px;height: 26px;background: url(../img/index.png) -630px -121px;}*/
+h1  a{float: left;width: 200px;height: 32px;background: url("../../common/img/logo.png") no-repeat;margin-top: 20px;margin-left: 14px;}
 .g-nav{float: right;height: 100%;}
 .g-nav li{float: left;height: 100%;}
 .g-nav li a{display: block;height: 100%;line-height: 80px;padding: 0 20px;font-size: 16px;color: #898b8d;}

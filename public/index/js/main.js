@@ -70,13 +70,20 @@ $(function(){
             $(this).attr('class', 'inp-warn');
         }
     });
-    //注册用户名框
+    inp.on('input', function(){
+        if( $(this).val().trim() !== ''){
+            $(this).attr('class', '');
+        }else{
+            $(this).attr('class', 'inp-warn');
+        }
+    });
+    //注册用户名框，检测用户名是否重复
     regUser.blur(function(){
         $.ajax({
             type: 'GET',
             url: '/api/user/checkUserName',
             data: {
-                username : $(this).val()
+                username : $(this).val().trim()
             },
             success: function(result){
                 prompt.text( result.message );

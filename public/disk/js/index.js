@@ -1396,7 +1396,7 @@ function elemMiddle(obj){
 /*
  * 退出登录
  * */
-var logOut = $S('.g-info')[0];
+var logOut = $S('.logout')[0];
 var logOutBtn = $S('a', logOut)[0];
 addEvent(logOutBtn, 'click', function () {
     window.location.href = '/logout';

@@ -4,7 +4,8 @@
 
 {% block head %}
 <meta name="Keywords" content="ayabala,云盘, 分享, 网盘, 网络硬盘, U盘, 云存储, 传输, 存储, 同步, 备份, 拍照, 上传, 下载, 中转, 文件, 照片, 相册, 离线, 传文件, wifi, cloud, 云盘网页版">
-<meta name="Description" content="云盘是ayabala公司为用户精心打造的一项智能云服务, 您可以通过云盘方便地在手机和电脑之间同步文件、推送照片和传输数据。">
+<meta name="Description" content="ayabala云是ayabala公司为用户精心打造的一项智能云服务, 您可以通过云盘方便地在手机和电脑之间同步文件、推送照片和传输数据。">
+<link rel="shortcut icon" type="image/x-icon" href="/common/favicon.ico">
 <link rel="stylesheet" href="/common/css/reset.css">
 <link rel="stylesheet" href="/common/css/common.css">
 <link rel="stylesheet" href="/disk/css/index.css">
@@ -12,8 +13,22 @@
 
 {% block content %}
 <div class="g-header">
-    <h1><img src="/disk/img/web-logo.png" alt="ayabala云盘网页版"></h1>
-    <div class="logout"><a href="javascript:;">退出登录</a></div>
+    <h1><a href="/"></a></h1>
+    <div class="user">
+        <span class="head-ico"></span>
+        <div class="user-name"></div>
+        <div class="user-dialog">
+            <div class="user-dialog-wrap">
+                <div class="user-info-dialog">
+                    <span class="head-ico-dialog"></span>
+                    <div class="user-name-dialog"></div>
+                </div>
+                <ul class="user-func-list">
+                    <li><a href="/logout">退出</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="g-side">
     <div class="g-upload">
@@ -150,7 +165,7 @@
 
 {% block script %}
 <script src="/disk/js/nj.js"></script>
+<script src="/disk/js/username.js"></script>
 <script src="/disk/js/index.js"></script>
-<script src="/disk/js/router.js"></script>
-<script></script>
+<!--<script src="/disk/js/router.js"></script>-->
 {% endblock %}

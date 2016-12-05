@@ -1,10 +1,69 @@
-html,body{width: 100%;overflow: hidden;}
+html,body{width: 100%;height: 100%;overflow: hidden;}
 
 /* header */
 .g-header{min-width: 940px;height: 50px;border-bottom: 1px solid #d8dce5;}
-.g-header h1{float: left;margin-top: 10px;margin-left: 19px;}
-.logout {float: right;margin: 15px;}
-.logout a{font-size: 14px;}
+.g-header h1{float: left;}
+.g-header h1 a{display: block;margin-top: 10px;margin-left: 19px;width: 200px;height: 32px;background: url("../../common/img/logo.png") no-repeat;}
+
+.user{float: right;height: 34px;margin-top: 8px;margin-right: 30px;cursor: pointer;position: relative;padding-bottom: 6px;}
+.head-ico{float: left;width: 34px;height: 34px;border-radius: 50%;box-sizing: border-box;border: 1px solid #4087EF;margin-right: 10px;background: url("../img/head-ico.jpg") no-repeat;background-size: 100% 100%;}
+.user-name{height: 34px;line-height: 34px;font-size: 16px;float: left;}
+
+.user:hover .user-dialog{
+    display: block;
+    opacity: 1;
+}
+
+.user-dialog{display: none;position: absolute;bottom: -134px;right: 0;width: 240px;z-index: 1002;}
+.user-dialog:before{
+    content: "";
+    border-bottom: 10px solid #4288e7;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    top: -10px;
+    right: 10px;
+}
+
+.user-dialog-wrap{
+    border-radius: 8px;overflow: hidden;
+    box-shadow: 0 0 3px 3px #ccc;
+}
+
+.user-info-dialog{
+    height: 90px;
+    background: #4288e7;
+}
+.head-ico-dialog{
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: url("../img/head-ico.jpg") no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 23px;
+    left: 18px;
+}
+.user-name-dialog{
+    font-size: 20px;
+    position: absolute;
+    top: 33px;
+    left: 100px;
+}
+.user-func-list{
+    background-color: #fff;
+    padding-bottom: 10px;
+}
+.user-func-list li{
+    height: 34px;
+}
+.user-func-list li a{
+    display: block;width: 100%;height: 100%;line-height: 34px;text-indent: 1rem;
+}
+.user-func-list li a:hover{
+    background-color: #f0f8fd;
+}
+
 
 
 

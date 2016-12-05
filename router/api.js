@@ -54,6 +54,20 @@ router.use(function(req, res, next){
 router.get('/user/checkusername', function(req, res){
     var username = req.query.username || '';
 
+    //用户名验证
+    if ( username.length < 3 || username.length > 16 ) {
+        res.responseData.code = 3;
+        res.responseData.message = '用户名长度必须在3-16个字符之间';
+        res.sendJSON();
+        return;
+    }
+    if(! (/^[a-zA-Z][a-zA-Z\d]{5,15}$/).test(username) ){
+        res.responseData.code = 4;
+        res.responseData.message = '用户名必须字母开头，由字母数字组成';
+        res.sendJSON();
+        return;
+    }
+
     User.findOne({
         username: username
     }).then(function(userInfo){
@@ -87,6 +101,12 @@ router.post('/user/register', function(req, res, next){
     if ( username.length < 3 || username.length > 16 ) {
         res.responseData.code = 1;
         res.responseData.message = '用户名长度必须在3-16个字符之间';
+        res.sendJSON();
+        return;
+    }
+    if(! (/^[a-zA-Z][a-zA-Z\d]{5,15}$/).test(username) ){
+        res.responseData.code = 4;
+        res.responseData.message = '用户名必须字母开头，由字母数字组成';
         res.sendJSON();
         return;
     }
@@ -124,6 +144,14 @@ router.post('/user/register', function(req, res, next){
         return user.save();
     }).then(function(usersave){
         if(usersave){
+            var data = new Data({
+                pid: null,
+                name: '测试文件夹',
+                user_id: usersave,
+                createDate: Date.now()
+            });
+            data.save();
+
             res.responseData.code = 0;
             res.responseData.message = '用户注册成功';
             res.sendJSON();
@@ -188,6 +216,14 @@ router.post('/user/login', function(req, res){
 * name
 * (pid)
 */
+
+//获取用户名
+router.get('/data/getUserName', checkAuth, function(req, res){
+    res.responseData.code = 0;
+    res.responseData.username = req.userInfo.username;
+    res.responseData.message = '获取用户名成功';
+    res.sendJSON();
+})
 
 router.post('/data/createFile', checkAuth,function(req, res){
     var name = req.body.name || '';
