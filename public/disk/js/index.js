@@ -624,13 +624,13 @@ addEvent(filecon, 'mousedown', function (ev) {
         document.onmouseup = function (ev) {
             console.log(disX, ev.pageX, disY, ev.pageY);
             //防止无法进入文件夹
-            //if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
-            //    console.log(disX - ev.pageX, disY - ev.pageY);
-            //    currentPid = target.dataset.fileId;
-            //    render();
-            //    document.onmousemove = document.onmouseup = null;
-            //    return;
-            //}
+            if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
+                console.log(disX - ev.pageX, disY - ev.pageY);
+                currentPid = target.dataset.fileId;
+                render();
+                document.onmousemove = document.onmouseup = null;
+                return;
+            }
             dragmove.style.display = 'none';
             dragmoveIcon.innerHTML = '';
             for (var i = 0; i < aFile.length; i++) {
