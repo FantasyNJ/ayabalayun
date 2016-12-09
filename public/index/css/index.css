@@ -1,3 +1,4 @@
+body{min-width: 1211px;}
 .m-wrap{width: 1211px;margin: 0 auto;}
 
 .m-header-wrap{height: 80px;}
@@ -8,7 +9,7 @@ h1  a{float: left;width: 200px;height: 32px;background: url("../../common/img/lo
 .g-nav li a{display: block;height: 100%;line-height: 80px;padding: 0 20px;font-size: 16px;color: #898b8d;}
 .g-nav li .on, .g-nav li a:hover{color: #3091f2;}
 
-.g-banner{height: 550px;background-color: #E0F2FF;overflow: hidden;}
+.g-banner{min-width: 1211px;height: 550px;background-color: #E0F2FF;overflow: hidden;}
 
 .m-banner-wrap{height: 420px;margin: 95px auto 0;position: relative;overflow: hidden;}
 .m-banner{position: absolute;left: 0;top: 0;}

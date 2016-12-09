@@ -146,6 +146,7 @@ function fileClickEvent(ev){
             var _id = target.dataset.fileId;
             window.open('/api/data/getDownload?_id=' + _id,'_blank');
             isMove = false;
+            document.onmousemove = document.onmouseup = null;
             return;
         }else{
             currentPid = target.dataset.fileId;
@@ -622,7 +623,7 @@ addEvent(filecon, 'mousedown', function (ev) {
             }
         };
         document.onmouseup = function (ev) {
-            console.log(disX, ev.pageX, disY, ev.pageY);
+            // console.log(disX, ev.pageX, disY, ev.pageY);
             //防止无法进入文件夹
             if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
                 console.log(disX - ev.pageX, disY - ev.pageY);
