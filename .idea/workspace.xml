@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f59eea20-f92b-4b70-b614-c9952f89685c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/disk/js/index.js" afterPath="$PROJECT_DIR$/public/disk/js/index.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/实现功能.txt" afterPath="$PROJECT_DIR$/实现功能.txt" />
     </list>
     <ignored path="ayabalayun.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,8 +36,8 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/disk/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="288" column="40" selection-start-line="288" selection-start-column="40" selection-end-line="288" selection-end-column="40" />
+            <state relative-caret-position="309">
+              <caret line="286" column="18" selection-start-line="286" selection-start-column="18" selection-end-line="286" selection-end-column="18" />
               <folding>
                 <marker date="1481522022519" expanded="true" signature="9612:9629" ph="..." />
                 <marker date="1481522022519" expanded="true" signature="12386:12400" ph="..." />
@@ -423,12 +423,12 @@
       <updated>1479212492126</updated>
       <workItem from="1481509682828" duration="3649000" />
       <workItem from="1481514698624" duration="458000" />
-      <workItem from="1481520671964" duration="1415000" />
+      <workItem from="1481520671964" duration="1885000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5522000" />
+    <option name="totallyTimeSpent" value="5992000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1366" height="744" extended-state="6" />
@@ -1168,8 +1168,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/disk/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="288" column="40" selection-start-line="288" selection-start-column="40" selection-end-line="288" selection-end-column="40" />
+        <state relative-caret-position="309">
+          <caret line="286" column="18" selection-start-line="286" selection-start-column="18" selection-end-line="286" selection-end-column="18" />
           <folding>
             <marker date="1481522022519" expanded="true" signature="9612:9629" ph="..." />
             <marker date="1481522022519" expanded="true" signature="12386:12400" ph="..." />
