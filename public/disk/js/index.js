@@ -279,6 +279,19 @@ function renderFile(pid) {
             for (var i = 0; i < checkbox.length; i++) {
                 checkboxEvent(i);
             }
+            //输入框鼠标移动阻止默认事件
+            var inp = document.querySelectorAll('.m-file .name input');
+            for(var i = 0; i < inp.length; i++){
+                addEvent(inp[i], 'mousemove', function(e){
+                    e.stopPropagation();
+                })
+                addEvent(inp[i], 'mousedown', function(e){
+                    e.stopPropagation();
+                })
+                addEvent(inp[i], 'mouseup', function(e){
+                    e.stopPropagation();
+                })
+            }
         },
     })
     
