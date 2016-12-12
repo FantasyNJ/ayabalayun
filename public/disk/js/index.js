@@ -142,14 +142,14 @@ function fileClickEvent(ev){
     var target = getSelector(ev.target, '.m-file');
     if (target && !isMove && ev.button === 0) {
         //如果不是移动时在文件夹上抬起并且是鼠标左键
-        if(target.dataset.fileType !== 'folder'){  //不是文件夹，不执行
-            var _id = target.dataset.fileId;
+        if(target.getAttribute('data-file-type') !== 'folder'){  //不是文件夹，不执行
+            var _id = target.getAttribute('data-file-id');
             window.open('/api/data/getDownload?_id=' + _id,'_blank');
             isMove = false;
             document.onmousemove = document.onmouseup = null;
             return;
         }else{
-            currentPid = target.dataset.fileId;
+            currentPid = target.getAttribute('data-file-id');
             render();
             listOn[currentPid] = true;
             document.onmousemove = document.onmouseup = null;
@@ -205,7 +205,7 @@ addEvent(treeMenu, 'click', function (ev) {
     var target = getSelector(ev.target, '.tree-title');
     if (target !== null) {
         //找到 tree-title 元素
-        var fileId = target.dataset.fileId; //target.dataset.fileId是字符串
+        var fileId = target.getAttribute('data-file-id'); //target.getAttribute('data-file-id)是字符串
         if (ev.target.className.indexOf('ico') !== -1) {
             if (!target.on) {   //true表示当前列表为展开状态
                 //展开列表
@@ -315,7 +315,7 @@ function renderNav(pid){
                 //    用addEventListener用匿名函数会绑定多次事件
                 //})
                 aBtn[i].onclick = function(){
-                    currentPid = this.dataset.fileId;
+                    currentPid = this.getAttribute('data-file-id');
                     listOn[currentPid] = true;  //改变左侧列表文件夹展开状态
                     render();
                 }
@@ -627,7 +627,7 @@ addEvent(filecon, 'mousedown', function (ev) {
             //防止无法进入文件夹
             if (Math.abs(ev.pageX - disX) < 5 && Math.abs(ev.pageY - disY) < 5) {
                 console.log(disX - ev.pageX, disY - ev.pageY);
-                currentPid = target.dataset.fileId;
+                currentPid = target.getAttribute('data-file-id');
                 render();
                 document.onmousemove = document.onmouseup = null;
                 return;
@@ -645,11 +645,11 @@ addEvent(filecon, 'mousedown', function (ev) {
                 console.log(seleEle)
                 //如果有移入的元素并且移入的元素不是选中的元素
                 //并且选中的元素不为空
-                var upId = upEle.dataset.fileId;
+                var upId = upEle.getAttribute('data-file-id');
                 var selectId = [];
                 for (var i = 0; i < seleEle.length; i++) {
                     var item = seleEle[i];
-                    var id = item.dataset.fileId;
+                    var id = item.getAttribute('data-file-id');
                     selectId.push(id);
                 }
                 ajax({
@@ -751,7 +751,7 @@ function up(ev, sObj) {
 //重命名公用函数
     function renameFileEvent() {
         var ele = whoSelect()[0];
-        var _id = ele.dataset.fileId; //注意转成数字
+        var _id = ele.getAttribute('data-file-id'); //注意转成数字 dataset
         var box = $S('.name', ele)[0];
         var span = $S('span', box)[0];
         var inp = $S('input', box)[0];
@@ -847,7 +847,7 @@ function up(ev, sObj) {
             var aEle = whoSelect();
             var removeIds = [];
             for (var i = 0; i < aEle.length; i++) {
-                var id = aEle[i].dataset.fileId;
+                var id = aEle[i].getAttribute('data-file-id');
                 removeIds.push(id);
             }
             ajax({
@@ -995,7 +995,7 @@ function up(ev, sObj) {
             }else{
                 for(var i = 0;i < seleEle.length;i++){
                     var item = seleEle[i];
-                    var id = item.dataset.fileId;
+                    var id = item.getAttribute('data-file-id');
                     if(id === moveId){
                         hideConfirm(ev);
                         tipsFn('err', '文件不能移入到本身')
@@ -1095,7 +1095,7 @@ function up(ev, sObj) {
             var target = getSelector(ev.target, '.tree-title');
             if (target !== null) {
                 //找到 tree-title 元素
-                var fileId = target.dataset.fileId; //target.dataset.fileId是字符串
+                var fileId = target.getAttribute('data-file-id'); //target.getAttribute('data-file-id)是字符串
                 if (ev.target.className.indexOf('ico') !== -1) {
                     if (!target.on) {   //true表示当前列表为展开状态
                         //展开列表
@@ -1136,7 +1136,7 @@ function up(ev, sObj) {
         }else{
             var restoreIds = [];
             for (var i = 0; i < aEle.length; i++) {
-                var id = aEle[i].dataset.fileId;
+                var id = aEle[i].getAttribute('data-file-id');
                 restoreIds.push(id);
             }
             ajax({
@@ -1171,7 +1171,7 @@ function up(ev, sObj) {
         }else{
             var removeIds = [];
             for (var i = 0; i < aEle.length; i++) {
-                var id = aEle[i].dataset.fileId;
+                var id = aEle[i].getAttribute('data-file-id');
                 removeIds.push(id);
             }
             ajax({
