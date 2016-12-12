@@ -1112,10 +1112,13 @@ function up(ev, sObj) {
                     }
                     target.on = !target.on;
                 } else {
-                    var treeList = Array.from($S('.tree-title', treeMenu));
-                    treeList.forEach(function(item){
-                        removeClass(item, 'tree-nav');
-                    })
+                    var treeList = $S('.tree-title', treeMenu);
+                    // treeList.forEach(function(item){
+                    //     removeClass(item, 'tree-nav');
+                    // })
+                    for(var i = 0; i < treeList.length; i++){
+                        removeClass(treeList[i], 'tree-nav');
+                    }
                     addClass(target, 'tree-nav');
                     moveId = fileId;
                 }
