@@ -1,0 +1,168 @@
+{% extends './layout.html' %}
+
+{% block title %}AYABALA云盘{% endblock %}
+
+{% block head %}
+<meta name="Keywords" content="ayabala,云盘, 分享, 网盘, 网络硬盘, U盘, 云存储, 传输, 存储, 同步, 备份, 拍照, 上传, 下载, 中转, 文件, 照片, 相册, 离线, 传文件, wifi, cloud, 云盘网页版">
+<meta name="Description" content="云盘是ayabala公司为用户精心打造的一项智能云服务, 您可以通过云盘方便地在手机和电脑之间同步文件、推送照片和传输数据。">
+<link rel="shortcut icon" type="image/x-icon" href="/common/favicon.ico">
+<link rel="stylesheet" href="/common/css/reset.css">
+<link rel="stylesheet" href="/common/css/common.css">
+<link rel="stylesheet" href="/index/css/index.css">
+{% endblock %}
+
+{% block content %}
+<div class="g-header">
+    <div class="m-wrap m-header-wrap">
+        <h1><a href="/"></a></h1>
+        <ul class="g-nav">
+            <li><a class="on" href="#">首页</a></li>
+            <li><a href="#">下载</a></li>
+            <li><a href="#">功能介绍</a></li>
+            <li><a href="#">云盘会员</a></li>
+        </ul>
+    </div>
+</div>
+<div class="g-banner">
+    <div class="m-banner-wrap">
+        <ul class="m-banner clearfix">
+            <li><img src="/index/img/banner_1.png"></li>
+            <li><img src="/index/img/banner_2.png"></li>
+            <li><img src="/index/img/banner_3.png"></li>
+            <li><img src="/index/img/banner_1.png"></li>
+        </ul>
+        <div class="m-login-reg-wrap">
+            <div class="m-login-reg">
+                <ul class="m-login-reg-list">
+                    <li class="on">账号登录</li>
+                    <li>账号注册</li>
+                </ul>
+                <div class="g-login-reg-wrap">
+                    <div class="g-login-wrap">
+                        <form action="/api/user/login" method="post" autocomplete="off">
+                            <h2>账号登录</h2>
+                            <div class="prompt"></div>
+                            <div><input type="text" name="username" placeholder="用户名"></div>
+                            <div><input type="password" name="password" placeholder="密码"></div>
+                            <div><button class="btn" type="submit">登录</button></div>
+                        </form>
+                    </div>
+                    <div class="g-reg-wrap">
+                        <form action="/api/user/register" method="post" autocomplete="off">
+                        <h2>账号注册</h2>
+                        <div class="prompt"></div>
+                        <div><input type="text" name="username" placeholder="用户名长度必须在3-16个字符之间"></div>
+                        <div><input type="password" name="password" placeholder="密码"></div>
+                        <div><input type="password" name="repassword" placeholder="确认密码"></div>
+                        <div><button class="btn" type="submit">注册</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="g-content">
+    <div class="g-down">
+        <ul class="m-down-wrap">
+            <li><a href="#"><i class="android"></i></a><span>Android版</span></li>
+            <li><a href="#"><i class="iphone"></i></a><span>iPhone版</span></li>
+            <li><a href="#"><i class="ipad"></i></a><span>iPad版</span></li>
+            <li><a href="#"><i class="windows"></i></a><span>Windows版</span></li>
+            <li><a href="#"><i class="mac"></i></a><span>Mac版</span></li>
+        </ul>
+    </div>
+    <div class="g-desc">
+        <div class="m-detail m-detail-blue">
+            <div class="m-detail-wrap">
+                <div class="detail-text album pl"></div>
+                <div class="detail-img pr"><img src="/index/img/album-backup.png"></div>
+            </div>
+        </div>
+        <div class="m-detail">
+            <div class="m-detail-wrap">
+                <div class="detail-img pl"><img src="/index/img/contact-backup.png"></div>
+                <div class="detail-text concat pr"></div>
+            </div>
+        </div>
+        <div class="m-detail m-detail-blue">
+            <div class="m-detail-wrap">
+                <div class="detail-text file pl"></div>
+                <div class="detail-img pr"><img src="/index/img/file-manage.png"></div>
+            </div>
+        </div>
+        <div class="m-detail">
+            <div class="m-detail-wrap">
+                <div class="detail-img pl"><img src="/index/img/cloudynotes.png"></div>
+                <div class="detail-text note pr"></div>
+            </div>
+        </div>
+        <div class="m-detail m-detail-blue">
+            <div class="m-detail-wrap">
+                <div class="detail-text trash pl"></div>
+                <div class="detail-img pr"><img src="/index/img/trash.png"></div>
+            </div>
+        </div>
+    </div>
+    <div class="g-feature">
+        <div class="g-inner">
+            <ul class="clearfix">
+                <li>
+                    <div class="icon file"></div>
+                    <div class="title">单文件更大</div>
+                    <div class="text">单个文件最大20G</div>
+                </li>
+                <li>
+                    <div class="icon flow"></div>
+                    <div class="title">单日流量更爽</div>
+                    <div class="text">单日最大20G</div>
+                </li>
+                <li>
+                    <div class="icon space"></div>
+                    <div class="title">空间更大</div>
+                    <div class="text">额外赠送2T空间</div>
+                </li>
+                <li>
+                    <div class="icon share"></div>
+                    <div class="title">分享更久</div>
+                    <div class="text">外链30天有效</div>
+                </li>
+                <li>
+                    <div class="icon label"></div>
+                    <div class="title">标签更全</div>
+                    <div class="text">识别全部图片 按标签分类</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="g-open-vip"><a href="#">马上开通会员</a></div>
+</div>
+<div class="g-footer">
+    <div class="g-footer-wrap">
+        <div class="g-friend">
+            <div class="g-friend-l">
+                <a class="friend-link" href="#" title="ayabala空间"><i class="icon icon-qzone"></i>ayabala空间</a>
+                <a class="friend-link" href="#" title="ayabala音乐"><i class="icon icon-music"></i>ayabala音乐</a>
+                <a class="friend-link" href="#" title="ayabalaMV"><i class="icon icon-mv"></i>ayabalaMV</a>
+                <a class="friend-link" href="#" title="ayabalaFM"><i class="icon icon-fm"></i>ayabalaFM</a>
+                <a class="friend-link" href="#" title="ayabala课堂"><i class="icon icon-course"></i>ayabala课堂</a>
+            </div>
+            <div class="g-friend-r">
+                <a class="friend-link" href="#" title="ayabala云"><i class="icon icon-qcloud"></i>ayabala云</a>
+                <a class="friend-link" href="#" title="ayabala企点"><i class="icon icon-qidian"></i>ayabala企点</a>
+            </div>
+        </div>
+        <div class="g-copyright">
+            <p><a href="#" target="_blank">关于ayabala</a> | <a href="#" target="_blank">服务条款</a> | <a href="#" target="_blank">客服中心</a>
+            <p>版权声明：您应尊重相关作品著作权人合法权益，未经著作权人合法授权，不能违法上传、存储、分享他人作品</p>
+            <p><a href="#" target="_blank">侵权投诉指引</a> |  举报或投诉：<a class="email" href="mailto:ningjie1993@ayabala.com">ningjie1993@ayabala.com</a></p>
+            <p>Copyright © 1998 - <span id="this_year">2016</span> AYABALA. All Rights Reserved. ayabala公司 版权所有</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="/bower_components/jquery/dist/jquery.js"></script>
+<script src="/index/js/main.js"></script>
+{% endblock %}

@@ -1,0 +1,1 @@
+.clearfix:after{content:'.';display:block;clear:both;height:0;visibility:hidden;overflow:hidden}.f-left{float:left}.f-right{float:right}.f-inbl{display:inline-block}.ellipsis{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}

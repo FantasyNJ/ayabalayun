@@ -19,8 +19,8 @@ var app = express();
 
 // 静态资源托管设置
 app.use( '/bower_components', express.static( path.join(__dirname, '/bower_components') ) );
-app.use( express.static( path.join(__dirname, '/public') ) );
-//app.use( '/download', express.static( path.join(__dirname, '/data') ) );
+app.use( express.static( path.join(__dirname, '/dist') ) );
+// app.use( express.static( path.join(__dirname, '/public') ) );
 
 // 创建一个模板引擎，并设置解析方法
 app.engine('html', swig.renderFile);

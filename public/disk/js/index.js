@@ -1,5 +1,5 @@
 'use strict';
-
+(function(){
 //根据数据生成文件列表
 var filecon = $S('.g-filecon')[0]; //文件夹容器
 var filewrap = $S('.g-filewrap')[0];
@@ -199,7 +199,7 @@ addEvent(filewrap, 'mousedown', function (ev) {
         };
         ev.preventDefault();
     }
-})
+});
 //事件委托、点击文件列表渲染
 addEvent(treeMenu, 'click', function (ev) {
     var target = getSelector(ev.target, '.tree-title');
@@ -1440,7 +1440,7 @@ addEvent(logOutBtn, 'click', function () {
             //clearClass();
             showElem();
             addClass(listItem, 'list-current');
-
+            console.log(listItem)
             return;
         }
         //音乐
@@ -1471,34 +1471,50 @@ addEvent(logOutBtn, 'click', function () {
             renderMediaFile('/api/data/getRecycleBin');
             hideElem();
             //显示删除功能按钮
-            removeElem.forEach(function(item){
+            // removeElem.forEach(function(item){
+            //     item.style.display = 'inline-block';
+            // })
+            for (var i = removeElem.length - 1; i >= 0; i--) {
+                var item = removeElem[i];
                 item.style.display = 'inline-block';
-            })
+            };
             addClass(listItem, 'list-current');
 
             return;
         }
     }
 
-    function clearClass(){
-        list.forEach(function(item){
+    function clearClass(){       
+        // list.forEach(function(item){
+        //     removeClass(item, 'list-current')
+        // })
+        for (var i = list.length - 1; i >= 0; i--) {
+            var item = list[i];
             removeClass(item, 'list-current')
-        })
+        };
     }
 
     function hideElem(){
         var hiddenElem = document.querySelectorAll('[data-hidden=hidden]');
-        hiddenElem.forEach(function(item){
+        // hiddenElem.forEach(function(item){
+        //     item.style.display = 'none';
+        // })
+        for (var i = hiddenElem.length - 1; i >= 0; i--) {
+            var item = hiddenElem[i];
             item.style.display = 'none';
-        })
+        };
         fileShow.style.left = 0;
         toolBtnList.isShow = false;
     }
     function showElem(){
         var hiddenElem = document.querySelectorAll('[data-hidden=hidden]');
-        hiddenElem.forEach(function(item){
+        // hiddenElem.forEach(function(item){
+        //     item.style.display = '';
+        // })
+        for (var i = hiddenElem.length - 1; i >= 0; i--) {
+            var item = hiddenElem[i];
             item.style.display = '';
-        })
+        };
         fileShow.style.left = '165px';
         toolBtnList.isShow = true;
     }
@@ -1543,4 +1559,6 @@ function renderMediaFile(url) {
         },
     })
 }
+})();
+
 
