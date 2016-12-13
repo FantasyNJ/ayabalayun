@@ -57,7 +57,7 @@ router.get('/user/checkusername', function(req, res){
     //用户名验证
     if ( username.length < 3 || username.length > 16 ) {
         res.responseData.code = 3;
-        res.responseData.message = '用户名长度必须在3-16个字符之间';
+        res.responseData.message = '用户名长度必须在6-16个字符之间';
         res.sendJSON();
         return;
     }
