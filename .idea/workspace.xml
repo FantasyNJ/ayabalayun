@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f59eea20-f92b-4b70-b614-c9952f89685c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/api.js" afterPath="$PROJECT_DIR$/router/api.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/index.html" afterPath="$PROJECT_DIR$/views/index.html" />
     </list>
     <ignored path="ayabalayun.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -81,8 +80,8 @@
         <option value="$PROJECT_DIR$/views/disk.html" />
         <option value="$PROJECT_DIR$/public/disk/js/index.js" />
         <option value="$PROJECT_DIR$/public/disk/js/nj.js" />
-        <option value="$PROJECT_DIR$/router/api.js" />
         <option value="$PROJECT_DIR$/views/index.html" />
+        <option value="$PROJECT_DIR$/router/api.js" />
       </list>
     </option>
   </component>
@@ -392,15 +391,15 @@
       <workItem from="1481509682828" duration="3649000" />
       <workItem from="1481514698624" duration="458000" />
       <workItem from="1481520671964" duration="1885000" />
-      <workItem from="1481594048814" duration="3454000" />
+      <workItem from="1481594048814" duration="3966000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9446000" />
+    <option name="totallyTimeSpent" value="9958000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="24" width="1366" height="744" extended-state="7" />
+    <frame x="0" y="24" width="1366" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17747949" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
