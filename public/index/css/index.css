@@ -22,10 +22,10 @@ h1  a{float: left;width: 200px;height: 32px;background: url("../../common/img/lo
 .m-login-reg ul li{float: left;width: 50%;height: 49px;border-bottom: 2px solid #A7ADB7;font-size: 16px;text-align: center;line-height: 49px;cursor: pointer;}
 .m-login-reg ul .on{border-bottom: 2px solid #3A97F6;}
 .m-login-reg ul li:hover{color: #3A97F6;}
-.prompt{height: 13px;}
+.prompt{height: 13px;padding: 6px;}
 
 .g-login-reg-wrap{text-align: center;}
-.g-login-reg-wrap h2{margin: 16px 0;font-size: 20px;color: #333;}
+.g-login-reg-wrap h2{margin: 16px 0 4px;font-size: 20px;color: #333;}
 .g-login-reg-wrap input{width: 258px;padding: 10px 0 10px 10px;height: 18px;line-height: 18px;color: #333;font-size: 16px;border-radius: 4px;border: 1px solid #D6D6D6;margin-bottom: 20px;}
 .g-login-reg-wrap .btn{width: 270px;height: 40px;line-height: 40px;border: 0;  font-size: 17px;background-color: #86CE2F;color: #fff;border-radius: 4px;}
 
