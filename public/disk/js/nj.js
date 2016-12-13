@@ -296,7 +296,7 @@ function ajax(obj) {
     console.log(obj.url)
 	var xhr = createXHR();	//创建XHR对象
 	//通过使用JS随机字符串解决IE浏览器第二次默认获取缓存的问题
-	//obj.url = obj.url + '?rand=' + Math.random();
+	obj.url = obj.url + '?rand=' + Math.random();
 
 	obj.data = params(obj.data);  //通过params()将名值对转换成字符串
 	//若是GET请求，则将数据加到url后面
